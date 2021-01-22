@@ -58,7 +58,7 @@ def impute_missing_data(time_series):
     restored_series = time_series.copy()
     column = restored_series.columns - 1
     for idx in range(len(restored_series)):
-        if restored_series.loc[idx, column - 1].isna():
+        if restored_series.loc[idx, column].isna():
             if restored_series.loc[idx + 1, column].isna():
                 # if sequential Na's exist take value of 4 rows ahead
                 restored_series.loc[idx, column].fillna(restored_series.loc[idx + 4, column])
@@ -76,7 +76,7 @@ def impute_outliers(time_series):
     :return: concise Time series without outliers
     """
     # create new time series w/o outliers
-    ts_without = time_series
+    ts_without = time_series.copy()
     # get last column location
     column = ts_without.columns - 1
     # get high quartile
@@ -157,7 +157,7 @@ def difference(time_series):
     :param time_series: Time series data
     :return: time series containing the difference between each original entry
     """
-    ts_difference = time_series
+    ts_difference = time_series.copy()
     column = ts_difference.colums - 1
     for idx in range(len(ts_difference)):
         if idx is not len(ts_difference):
