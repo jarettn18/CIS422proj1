@@ -30,4 +30,4 @@ Compiler: Python 3.8
 * Jarett Nishijo (jnishijo@uoregon.edu)
 * Zeke Petersen (ezekielp@uoregon.edu)
 * Jack Sanders  (jsander5@uoregon.edu)
-* Callista West
+* Callista West (cwest10@uoregon.edu)
