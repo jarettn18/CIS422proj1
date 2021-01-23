@@ -9,10 +9,6 @@ Version 0.1.0
 Overview: Modeling functions to be used with preprocessed
         data from preprocessing.py
 """
-import preprocessing
-import numpy as np
-from sklearn.model_selection import train_test_split
-
 
 
 class mlp_model():
