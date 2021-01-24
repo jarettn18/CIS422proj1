@@ -12,6 +12,8 @@ Overview: Preprocessing functions to be used with Time Series Data.
 import pandas as pd
 import math
 import numpy as np
+# for Clips function - user must pip install pyjanitor
+import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -56,15 +58,8 @@ def impute_missing_data(time_series):
     """
     # Possibly use .shape - Return a tuple representing the dimensionality of the DataFrame.
     restored_series = time_series.copy()
-    column = restored_series.columns - 1
-    for idx in range(len(restored_series)):
-        if restored_series.loc[idx, column].isna():
-            if restored_series.loc[idx + 1, column].isna():
-                # if sequential Na's exist take value of 4 rows ahead
-                restored_series.loc[idx, column].fillna(restored_series.loc[idx + 4, column])
-            # if singular Na, use data of next entry as a fill
-            else:
-                restored_series.loc[idx, column].fillna(restored_series.loc[idx + 1, column])
+    # find NaN and fill with data to the right of it
+    restored_series = restored_series.fillna(method='ffill')
     return restored_series
 
 
@@ -79,16 +74,18 @@ def impute_outliers(time_series):
     ts_without = time_series.copy()
     # get last column location
     data_col = time_series.columns[len(ts_without.columns) - 1]
+    row = time_series.index
+    print(row)
     # get high quartile
     quantile_high = ts_without[data_col].quantile(0.98)
     # get low end quartile
     quantile_low = ts_without[data_col].quantile(0.02)
     # go through data in time_series
-    for idx in range(len(ts_without)):
+    for ind in ts_without.index:
         # if value is outside quartile's delete it
-        if ts_without[idx, data_col] < quantile_low or ts_without[idx, data_col] > quantile_high:
+        if ts_without.at[ind, data_col] < quantile_low or ts_without.at[ind, data_col] > quantile_high:
             # drop specific rows date, timestamp & value
-            ts_without.drop([idx])
+            ts_without.drop([ind], inplace=True)
     return ts_without
 
 
@@ -105,16 +102,24 @@ def longest_continuous_run(time_series):
     # https://stackoverflow.com/questions/41494444/pandas-find-longest-stretch-without-nan-values
     # get data values and store as array
     data_col = longest_run_ts.columns[len(longest_run_ts.columns) - 1]
-    ts_values = longest_run_ts.data_col.values
-    # create mask of array as boolean
-    mask = np.concatenate(([True], np.isnan(ts_values), [True]))
-    # take out negative values if any
-    start_stop_limits = np.flatnonzero(mask[1:] != mask[:-1]).reshape(-1, 2)
-    # get start/stop indexes of longest run - subtract 1 from stop to get correct
-    # index of stop location
-    start, stop = start_stop_limits[(start_stop_limits[:, 1] - start_stop_limits[:, 0]).argmax()]
+    lr_index = longest_run_ts.index[pd.isna(longest_run_ts[data_col])].tolist()
+    #find difference between index of TS
+    diff = lr_index[1] - lr_index[0]
+    # placeholder for start,stop indexes
+    first_idx = 0
+    last_idx = 1
+    # loop through array getting difference of consecutive values
+    for idx in range(1, len(lr_index) - 1):
+        if lr_index[idx+1] - lr_index[idx] > diff:
+            diff = lr_index[idx+1] - lr_index[idx]
+            first_idx = lr_index[idx]
+            last_idx = lr_index[idx+1]
+    # get start/stop times from TS at indexed locations
+    time_col = time_series.columns[0]
+    start_time = time_series.at[first_idx+1, time_col]
+    end_time = time_series.at[last_idx-1, time_col]
     # clip time_series from start to stopping point to get longest run
-    longest_run_ts = clip(time_series, start, stop - 1)
+    longest_run_ts = clip(time_series, start_time, end_time)
     return longest_run_ts
 
 
@@ -129,13 +134,11 @@ def clip(time_series, starting_date, final_date):
     # copy ts into new obj
     # get csv name for column with dates
     dates = time_series.columns[0]
-    # filter time series looking at dates
-    mask = (time_series[dates] >= starting_date) \
-           & (time_series[dates] <= final_date)
-    # assign clipped_time_series the rows of dates within time frame
-    clipped_time_series = time_series.loc[mask]
+    clipped = time_series.copy()
+    # call filter_date function to get dates/values
+    filtered = clipped.filter_date(dates, starting_date, final_date)
     # return time frame
-    return clipped_time_series
+    return filtered
 
 
 def assign_time(time_series, start, increment):
@@ -158,17 +161,20 @@ def difference(time_series):
     :return: time series containing the difference between each original entry
     """
     ts_difference = time_series.copy()
+    # get column index
     data_col = time_series.columns[len(ts_difference.columns) - 1]
+    # loop through column
     for ind in ts_difference.index:
-        ts_difference.at[ind, data_col] = 0
-    #for index, row in time_series.iterrows():
-    #    ts_difference.loc[data_col, index] = 6
-    #ts = ts_difference[data_col].diff()
+        # if index is the last entry
+        if ind == (len(ts_difference.index) - 1):
+            # assign index the value of 0 as there is no difference between next entry
+            val = time_series.at[ind, data_col] - time_series.at[ind, data_col]
+            ts_difference.at[ind, data_col] = val
+        else:
+            # else assign entry the value of consecutive - current
+            val = time_series.at[ind+1, data_col] - time_series.at[ind, data_col]
+            ts_difference.at[ind, data_col] = val
     return ts_difference
-    #for index, idx in ts_difference.iterrows():
-    #    if index is not len(ts_difference.index) - 1:
-    #        ts_difference.replace() = time_series.iloc[idx + 1, data_col] - time_series.iloc[idx, data_col]
-    #return ts_difference
 
 
 def scaling(time_series):
@@ -199,11 +205,13 @@ def logarithm(time_series):
      a version of previous values
     """
     log_10_time_series = time_series.copy()
+    # get column name containing data
     data_col = time_series.columns[len(log_10_time_series.columns) - 1]
-    for idx in range(len(log_10_time_series)):
+    # loop through rows of TS
+    for idx in log_10_time_series.index:
         # go through each row of last column - assign cubed root of value at each
         # index of the column
-        log_10_time_series.loc[idx, data_col] = math.log10(log_10_time_series.loc[idx, data_col])
+        log_10_time_series.at[idx, data_col] = math.log10(log_10_time_series.at[idx, data_col])
     return log_10_time_series
 
 
@@ -216,11 +224,13 @@ def cubic_roots(time_series):
             the cubic root of previous values
     """
     cubed_time_series = time_series.copy()
+    # get column name containing data
     data_col = time_series.columns[len(cubed_time_series.columns) - 1]
-    for idx in range(len(cubed_time_series)):
+    # loop through rows of TS
+    for idx in cubed_time_series.index:
         # go through each row of last column - assign cubed root of value at each
         # index of the column - idx = row
-        cubed_time_series.loc[idx, data_col] = math.pow(cubed_time_series.loc[idx, data_col], 1 / 3)
+        cubed_time_series.at[idx, data_col] = math.pow(cubed_time_series.at[idx, data_col], 1 / 3)
     return cubed_time_series
 
 
