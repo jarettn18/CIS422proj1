@@ -1,6 +1,5 @@
 ## Project 1: Time Series Analysis Support For Data Scientists
 ---------------------------------------------------------------
-Project 1 - TS Analysis
 CIS 422
 Team: The Nerd Herd
 Creation date: 1/19/2021
@@ -11,7 +10,7 @@ Creation date: 1/19/2021
 
 ### Directory Structure
 -----------------------
-* ./ - contains the primary modules, including testing and helper functions 
+* ./Modules - contains the primary modules, including testing and helper functions 
 * ./Logistics - contains internal scheduling deadlines, team meeting information, and internal code standards
 * ./Documentation - contains the SRS and SDS
 * ./TestData - contains input files used to test the various modules
