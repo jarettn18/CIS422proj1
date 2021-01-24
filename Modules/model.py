@@ -28,7 +28,7 @@ class mlp_model():
         :param output_dimension: ?
         :param layers: The ith element represents the number of neronds in the ith hidden layer
         """
-        self.model = MLPClassifier(hidden_layer_sizes=layers)
+        self.model = MLPClassifier(hidden_layer_sizes=layers, max_iter=300)
         self.input_d = input_dimension
         self.output_d = output_dimension
 
