@@ -12,6 +12,7 @@ Overview: Preprocessing functions to be used with Time Series Data.
 import pandas as pd
 import math
 import numpy as np
+import datetime as dt
 # for Clips function - user must pip install pyjanitor
 import janitor as pyj
 
@@ -103,7 +104,7 @@ def longest_continuous_run(time_series):
     # get data values and store as array
     data_col = longest_run_ts.columns[len(longest_run_ts.columns) - 1]
     lr_index = longest_run_ts.index[pd.isna(longest_run_ts[data_col])].tolist()
-    #find difference between index of TS
+    # find difference between index of TS
     diff = lr_index[1] - lr_index[0]
     # placeholder for start,stop indexes
     first_idx = 0
@@ -150,7 +151,20 @@ def assign_time(time_series, start, increment):
     :param increment: difference to add to next timestamp
     :return: a new time_series with timestamps assigned to each entry
     """
-    pass
+    new_series = time_series.copy()
+    new_series.insert(loc=0, column='Timestamp: Hour', value='')
+    column_list = new_series.columns[0]
+    # MM/DD/YYYY
+    date_splice = start.split(sep="/")
+    date_year = int(date_splice[2])
+    date_month = int(date_splice[0])
+    date_day = int(date_splice[1])
+    date = dt.datetime(date_year, date_month, date_day)
+    for idx in new_series.index:
+        new_series.at[idx, column_list] = date
+        date += dt.timedelta(hours=increment)
+        
+    return new_series
 
 
 def difference(time_series):
@@ -182,9 +196,13 @@ def scaling(time_series):
     Produces a time series whose magnitudes are scaled so that the resulting
     magnitudes range in the interval [0,1].
     :param time_series: Time series data
-    :return:
+    :return: a new time series with magnitudes between 0 - 1
     """
-    pass
+    data_col = time_series.columns[len(time_series.columns) - 1]
+    normalized_ts = time_series.copy()
+    normalized_column = (time_series - time_series.mean())/time_series.std()
+    normalized_ts[data_col] = normalized_column[data_col].values
+    return normalized_ts
 
 
 def standardize(time_series):
@@ -193,7 +211,12 @@ def standardize(time_series):
     :param time_series: Time series data
     :return: a Time series with mean of 0/variance is 1
     """
-    pass
+    standard_ts = time_series.copy()
+    data_col = time_series.columns[len(time_series.columns) - 1]
+    a, b = 10, 50
+    x, y = standard_ts[data_col].min(), standard_ts[data_col].max()
+    standard_ts[data_col] = (standard_ts[data_col] - x) / (y - x) * (b - a)
+    return standard_ts
 
 
 def logarithm(time_series):
