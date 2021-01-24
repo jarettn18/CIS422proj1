@@ -44,7 +44,7 @@ def denoise(time_series):
     :param time_series: Time series data
     :return: returns a new Time Series with less noise
     """
-    clean_time_series = difference(time_series)
+    clean_time_series = cubic_roots(time_series)
     return clean_time_series
 
 
