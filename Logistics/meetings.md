@@ -45,3 +45,12 @@ Tracking for meeting date, time, duration, and content.
 6:00pm-6:30pm (all members present)
 * Established next Thursday (1/28) as the deadline for finalizing the modules and basic tree operations
 * Discussed overall system design
+
+### 1/26/2021 - Mini team meeting
+-----------------------------------
+7:00pm-7:30pm (all members except Callisa present)
+* Talked about getting a static pipeline (with no tree involved) working as intended as the primary goal to get done by Thursday (This weekend at the latest)
+* Emailed asking to meet Juan on Thursday at 5:30 to determine how matrices are supposed to be passed to the modeling functions.
+  * We have working functions to create the matrices from an input file-- though Logan will modify the timestamps to reflect the relative time for the datapoint (essentially combining the date and time of day columns into one).
+  * We are working off the assumption that we need to split the train data into train and validation data, which is then passed to the model to create forecast data. This would then be compared to the existing test data (or the test data we pre-split if we split into three sets rather than 2) using the mse/mape functions.
+* Introduced the tracking file for hours, etc.
