@@ -87,6 +87,23 @@ def add_subtree(self, tree_root, new_node):
     printNode(self)
     return None
 
+def save_tree(root):
+    """
+    Tree starting at specified root will be create and saved to a CSV? file
+    :param root: the root of the tree the user is wanting saved
+    :return: ??? do we want a CSV file?
+    """
+
+
+def save_pipeline(root, end):
+    """
+    Takes a pipeline from a given root and a given end and saves/stores the
+        pipeline
+    :param root: the root of the pipeline
+           end: the last node/leaf of the pipeline
+    : return: ?? CSV file? json?
+    """
+
 """
 
 def replicate_path(self, array, end_node):
