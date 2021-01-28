@@ -22,6 +22,7 @@ Compiler: Python 3.8
     * scikit-learn
     * pandas
     * numpy
+    * pyjanitor
 
 ### Authors
 -----------

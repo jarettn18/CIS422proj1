@@ -15,7 +15,7 @@ from patsy.highlevel import dmatrix
 import numpy as np
 import datetime as dt
 # for Clips function - user must pip install pyjanitor
-import janitor as pyj
+#import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -77,8 +77,7 @@ def impute_outliers(time_series):
     ts_without = time_series.copy()
     # get last column location
     data_col = time_series.columns[len(ts_without.columns) - 1]
-    row = time_series.index
-    print(row)
+    #row = time_series.index
     # get high quartile
     quantile_high = ts_without[data_col].quantile(0.95)
     # get low end quartile
@@ -88,7 +87,8 @@ def impute_outliers(time_series):
         # if value is outside quartile's delete it
         if ts_without.at[ind, data_col] < quantile_low or ts_without.at[ind, data_col] > quantile_high:
             # drop specific rows date, timestamp & value
-            ts_without.drop([ind], inplace=True)
+            # axis=1 specifies Rows
+            ts_without.drop([ind], axis=0, inplace=True)
     return ts_without
 
 
@@ -107,26 +107,29 @@ def longest_continuous_run(time_series):
     data_col = longest_run_ts.columns[len(longest_run_ts.columns) - 1]
     lr_index = longest_run_ts.index[pd.isna(longest_run_ts[data_col])].tolist()
     # find difference between index of TS
-    diff = lr_index[1] - lr_index[0]
-    # placeholder for start,stop indexes
-    first_idx = 0
-    last_idx = 1
-    # loop through array getting difference of consecutive values
-    for idx in range(1, len(lr_index) - 1):
-        if lr_index[idx + 1] - lr_index[idx] > diff:
-            diff = lr_index[idx + 1] - lr_index[idx]
-            first_idx = lr_index[idx]
-            last_idx = lr_index[idx + 1]
-    # get start/stop times from TS at indexed locations
-    time_col = time_series.columns[0]
-    start_time = time_series.at[first_idx + 1, time_col]
-    end_time = time_series.at[last_idx - 1, time_col]
-    # clip time_series from start to stopping point to get longest run
-    longest_run_ts = clip(time_series, start_time, end_time)
+    # if lr_index is empty then there are no NaN's
+    if len(lr_index) > 0:
+        diff = lr_index[1] - lr_index[0]
+        # placeholder for start,stop indexes
+        first_idx = 0
+        last_idx = 1
+        # loop through array getting difference of consecutive values
+        for idx in range(1, len(lr_index) - 1):
+            if lr_index[idx + 1] - lr_index[idx] > diff:
+                diff = lr_index[idx + 1] - lr_index[idx]
+                first_idx = lr_index[idx]
+                last_idx = lr_index[idx + 1]
+        # get start/stop times from TS at indexed locations
+        time_col = time_series.columns[0]
+        start_time = time_series.at[first_idx + 1, time_col]
+        end_time = time_series.at[last_idx - 1, time_col]
+        # clip time_series from start to stopping point to get longest run
+        longest_run_ts = clip(time_series, start_time, end_time)
+        return longest_run_ts
     return longest_run_ts
 
 
-def clip(time_series, starting_date, final_date):
+def clip(time_series, starting_date, final_date) -> object:
     """
     clips the time series to the specified period’s data.
     :param time_series: Time series data
@@ -139,9 +142,9 @@ def clip(time_series, starting_date, final_date):
     dates = time_series.columns[0]
     clipped = time_series.copy()
     # call filter_date function to get dates/values
-    filtered = clipped.filter_date(dates, starting_date, final_date)
+    #filtered = clipped.filter_date(dates, starting_date, final_date)
     # return time frame
-    return filtered
+    #return filtered
 
 
 def assign_time(time_series, start, increment):
@@ -291,20 +294,20 @@ def design_matrix(time_series, input_index=0, output_index=0):
     :param time_series: Time series data
     :param input_index: index of chosen data
     :param output_index: Y val after being put into matrix
-    :return: a numpy Matrix
+    :return: a numpy Matrix of touples
     """
     # are we to create/ find algo that takes input and makes it output?
     tmp_ts = time_series.copy()
     time_col = tmp_ts.columns[0]
-    data_col = tmp_ts.columns[len(tmp_ts.columns) - 1]
+    mst_col = tmp_ts.columns[len(tmp_ts.columns) - 2]
     # remove time column - not necessary
-    tmp_ts.drop([time_col])
+    # axis=1 specifies Columns
+    tmp_ts.drop([time_col], axis=1, inplace=True)
+    tmp_ts.drop([mst_col], axis=1, inplace=True)
     # create patsy dmatrix using formula for linear regression
     # passing time series data into it - returns a matrix
-
     # Convert TS to numpy array - Matrix
     ts_matrix = tmp_ts.to_numpy()
-
     # next line possible for function application to matrix
     # a_matrix = dmatrix("y ~ a + bX", data=tmp_ts, return_type="dataframe")
     return ts_matrix
@@ -337,13 +340,14 @@ def ts2db(input_file, perc_training, perc_valid, perc_test, input_index,
     :param input_index: initial index of data
     :param output_index: index to take data from - looks similar to input index
     :param output_file: file for data to be written into
-    :return: file containing db
+    :return: Writes Matrix to csv file
     """
     ts = read_from_file(input_file)
     split_data(time_series=ts, perc_training=perc_training, perc_test=perc_test, perc_valid=perc_valid)
     ts_training = read_from_file("perc_training.csv")
-    des_mtx = design_matrix(ts_training)
-    return des_mtx
-    # Use matrix for MLP
+    matrix = design_matrix(ts_training)
+    dt_matrix = pd.DataFrame(matrix, columns=['Data'])
+    dt_matrix.drop(dt_matrix.index[0], axis=0, inplace=True)
+    write_to_file(output_file, dt_matrix)
 
 
