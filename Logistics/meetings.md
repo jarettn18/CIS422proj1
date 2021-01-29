@@ -48,7 +48,7 @@ Tracking for meeting date, time, duration, and content.
 
 ### 1/26/2021 - Mini team meeting
 -----------------------------------
-7:00pm-7:30pm (all members except Callisa present)
+7:00pm-7:30pm (Zeke, Logan, Jack, Jarett)
 * Talked about getting a static pipeline (with no tree involved) working as intended as the primary goal to get done by Thursday (This weekend at the latest)
 * Emailed asking to meet Juan on Thursday at 5:30 to determine how matrices are supposed to be passed to the modeling functions.
   * We have working functions to create the matrices from an input file-- though Logan will modify the timestamps to reflect the relative time for the datapoint (essentially combining the date and time of day columns into one).
