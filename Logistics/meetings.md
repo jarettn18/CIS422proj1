@@ -54,3 +54,9 @@ Tracking for meeting date, time, duration, and content.
   * We have working functions to create the matrices from an input file-- though Logan will modify the timestamps to reflect the relative time for the datapoint (essentially combining the date and time of day columns into one).
   * We are working off the assumption that we need to split the train data into train and validation data, which is then passed to the model to create forecast data. This would then be compared to the existing test data (or the test data we pre-split if we split into three sets rather than 2) using the mse/mape functions.
 * Introduced the tracking file for hours, etc.
+
+### 1/28/2021 - Weekly team meeting
+-----------------------------------
+6:00pm-6:20pm (Zeke, Logan, Jack, Callista)
+* Discussed the questions we will be asking Juan tomorrow about the rigidity of the function signatures provided and to make sure our pipeline understanding is accurate.
+* Clarified some code hygeine standards (headers, compartmentalizing test code, etc)
