@@ -3,7 +3,7 @@ File: tree.py
 Class: CIS 422
 Date: January 20, 2021
 Team: The Nerd Herd
-Head Programmers: Logan Levitre, Zeke Peterson, Jarett Nishijo, Callista West, Jack Sanders
+Head Programmer: Callista West
 Version 0.1.0
 
 Basic Tree implementation
@@ -190,42 +190,4 @@ def printNode(root):
 		
 
 
-#building a tree for testing purposes
 
-root = Node("root")
-
-prep = Node("preprocessing")
-root.child.append(prep)
-denoise = Node("denoise")
-prep.folder.append(denoise)
-missing_data = Node("impute_missing_data")
-prep.folder.append(missing_data)
-clip = Node("clip")
-                   
-#model = Node("modeling")
-#prep.child.append(model)
-mlp = Node("mlp_model")
-rf = Node("rf_model")
-prep.child.append(mlp)
-prep.child.append(rf)
-visual = Node("visualization")
-visual2 = Node("visualization 2")
-mlp.child.append(visual)
-rf.child.append(visual2)
-#model.folder.append(mlp)
-#root.child.append(Node("denoise")) 
-#root.child.append(Node("impute_missing_data"))
-
-
-print("Level order traversal with new nodes added\n")
-printNode(root)
-
-replace(prep, denoise, clip)
-
-replicate_subtree(root, rf)
-
-add_subtree(root, mlp, visual2)
-
-#print_path(root, mlp)
-
-printNode(root)
