@@ -1,21 +1,19 @@
 """
 File: preprocessing.py
 Class: CIS 422
-Date: January 21, 2021
+Date: January 28, 2021
 Team: The Nerd Herd
 Head Programmer: Logan Levitre
-Version 0.1.7
+Version 1.0.0
 
 Overview: Preprocessing functions to be used with Time Series Data.
-    -- Need second opinion for revision of header structure --
 """
 import pandas as pd
 import math
-from patsy.highlevel import dmatrix
+from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import datetime as dt
-# for Clips function - user must pip install pyjanitor
-#import janitor as pyj
+import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -77,7 +75,7 @@ def impute_outliers(time_series):
     ts_without = time_series.copy()
     # get last column location
     data_col = time_series.columns[len(ts_without.columns) - 1]
-    #row = time_series.index
+    # row = time_series.index
     # get high quartile
     quantile_high = ts_without[data_col].quantile(0.95)
     # get low end quartile
@@ -110,20 +108,27 @@ def longest_continuous_run(time_series):
     # if lr_index is empty then there are no NaN's
     if len(lr_index) > 0:
         diff = lr_index[1] - lr_index[0]
-        # placeholder for start,stop indexes
+    #    # placeholder for start,stop indexes
         first_idx = 0
         last_idx = 1
-        # loop through array getting difference of consecutive values
-        for idx in range(1, len(lr_index) - 1):
-            if lr_index[idx + 1] - lr_index[idx] > diff:
+    #    # loop through array getting difference of consecutive values
+        for idx in range(0, len(lr_index)):
+            if idx == (len(lr_index) - 1):
+                if len(longest_run_ts.index) - lr_index[idx] > diff:
+                    diff = len(longest_run_ts.index) - lr_index[idx]
+                    first_idx = lr_index[idx] + 1
+                    last_idx = (len(longest_run_ts) - 1)
+            elif lr_index[idx + 1] - lr_index[idx] > diff:
                 diff = lr_index[idx + 1] - lr_index[idx]
                 first_idx = lr_index[idx]
                 last_idx = lr_index[idx + 1]
         # get start/stop times from TS at indexed locations
+
         time_col = time_series.columns[0]
-        start_time = time_series.at[first_idx + 1, time_col]
+        start_time = time_series.at[first_idx, time_col]
         end_time = time_series.at[last_idx - 1, time_col]
         # clip time_series from start to stopping point to get longest run
+        #data = [ x in range(time_series[start_time], time_series[end_time])]
         longest_run_ts = clip(time_series, start_time, end_time)
         return longest_run_ts
     return longest_run_ts
@@ -142,9 +147,9 @@ def clip(time_series, starting_date, final_date) -> object:
     dates = time_series.columns[0]
     clipped = time_series.copy()
     # call filter_date function to get dates/values
-    #filtered = clipped.filter_date(dates, starting_date, final_date)
+    filtered = clipped.filter_date(dates, starting_date, final_date)
     # return time frame
-    #return filtered
+    return filtered
 
 
 def assign_time(time_series, start, increment):
@@ -203,10 +208,18 @@ def scaling(time_series):
     :param time_series: Time series data
     :return: a new time series with magnitudes between 0 - 1
     """
-    data_col = time_series.columns[len(time_series.columns) - 1]
     normalized_ts = time_series.copy()
-    normalized_column = (time_series - time_series.mean()) / time_series.std()
-    normalized_ts[data_col] = normalized_column[data_col].values
+    data_col = time_series.columns[len(time_series.columns) - 1]
+    data = [x for x in normalized_ts[data_col]]
+    new_data = pd.DataFrame(data, columns=[data_col])
+
+    scalar = MinMaxScaler()
+    normalized_ts_new = (scalar.fit_transform(new_data))
+
+    for idx in range(len(normalized_ts)):
+        if idx == len(normalized_ts):
+            break
+        normalized_ts[data_col].values[idx] = normalized_ts_new[idx]
     return normalized_ts
 
 
@@ -272,34 +285,44 @@ def split_data(time_series, perc_training, perc_valid, perc_test):
     :param perc_test: percentage of time series data to be used for testing
     :return: None
     """
-    ts_size = len(time_series.index)
-    test_perc = (perc_test / 100)
-    test_valid = (perc_valid / 100)
-    test_training = (perc_training / 100)
-    t_p_l = int((ts_size * test_perc))
-    t_v_l = int((ts_size * test_valid))
-    t_t_l = int((ts_size * test_training))
-    p_tr_cut = time_series.iloc[:t_t_l, :]
-    p_tr_cut.to_csv("perc_training.csv", index=False)
-    p_v_cut = time_series.iloc[t_t_l + 1:(t_v_l + t_t_l), :]
-    p_v_cut.to_csv("perc_valid.csv", index=False)
-    p_test_cut = time_series.iloc[t_p_l + 1:ts_size, :]
-    p_test_cut.to_csv("perc_test.csv", index=False)
+    if perc_training >= perc_valid:
+        # Create error handling for if percentages are of same val for equal comparison
+        ts_size = len(time_series.index)
+        test_perc = (perc_test / 100)
+        test_valid = (perc_valid / 100)
+        test_training = (perc_training / 100)
+        t_p_l = int((ts_size * test_perc))
+        t_v_l = int((ts_size * test_valid))
+        t_t_l = int((ts_size * test_training))
+        p_tr_cut = time_series.iloc[:t_t_l, :]
+        p_tr_cut.to_csv("perc_training.csv", index=False)
+        p_v_cut = time_series.iloc[t_t_l + 1:(t_v_l + t_t_l), :]
+        p_v_cut.to_csv("perc_valid.csv", index=False)
+        p_test_cut = time_series.iloc[t_p_l + 1:ts_size, :]
+        p_test_cut.to_csv("perc_test.csv", index=False)
+    else:
+        print("Error: Training percentage and Validation percentage "
+              + "must be equal")
 
 
-def design_matrix(time_series, input_index=0, output_index=0):
+def design_matrix(time_series, input_index, output_index):
     """
     Creates a matrix of time series data
-    takes an input idx - and returns output index
+    while adding to input/output index
     :param time_series: Time series data
-    :param input_index: index of chosen data
-    :param output_index: Y val after being put into matrix
-    :return: a numpy Matrix of touples
+    :param input_index: indices of training data for error
+    :param output_index: forecasted index for error testing
+    :return: a numpy Matrix data
     """
+    #### BEFORE TAKING TIME AWAY
     # are we to create/ find algo that takes input and makes it output?
     tmp_ts = time_series.copy()
     time_col = tmp_ts.columns[0]
     mst_col = tmp_ts.columns[len(tmp_ts.columns) - 2]
+    t = len(tmp_ts)
+    for idx in reversed(range(0, t, 5)):
+        input_index.append(idx)
+    output_index.append(t + 5)
     # remove time column - not necessary
     # axis=1 specifies Columns
     tmp_ts.drop([time_col], axis=1, inplace=True)
@@ -308,12 +331,10 @@ def design_matrix(time_series, input_index=0, output_index=0):
     # passing time series data into it - returns a matrix
     # Convert TS to numpy array - Matrix
     ts_matrix = tmp_ts.to_numpy()
-    # next line possible for function application to matrix
-    # a_matrix = dmatrix("y ~ a + bX", data=tmp_ts, return_type="dataframe")
     return ts_matrix
 
 
-def design__matrix(time_series, m_i, t_i, m_0, t_0):
+def design__matrix(time_series, m_i, t_i, m_0, t_0, inputs, outputs):
     """
     Creates a Matrix up to certain position of Time series
     depends on m_i & t_i
@@ -325,7 +346,11 @@ def design__matrix(time_series, m_i, t_i, m_0, t_0):
     :return: Matrix of time series data up to m_i & t_i
     """
     # Needs further Discussion with Zeke/Jarett
-    pass
+    ts_train = time_series.copy()
+    design_matrix(ts_train, inputs, outputs)
+
+    # take the values of input/output index and create matrix to return
+    return design_matrix(ts_train, inputs, outputs)
 
 
 def ts2db(input_file, perc_training, perc_valid, perc_test, input_index,
@@ -337,17 +362,24 @@ def ts2db(input_file, perc_training, perc_valid, perc_test, input_index,
     :param perc_training: percentage of data to be split into training data
     :param perc_valid: percentage of data to be split into valid data
     :param perc_test: percentage of the data to be split into test data
-    :param input_index: initial index of data
-    :param output_index: index to take data from - looks similar to input index
+    :param input_index: array pre-made to be filled for error testing functions?
+            what indexes to take data from in ts
+    :param output_index: array pre-made to be filled for error testing functions
     :param output_file: file for data to be written into
     :return: Writes Matrix to csv file
     """
+    # read csv file
     ts = read_from_file(input_file)
+    # split into different sets of data
     split_data(time_series=ts, perc_training=perc_training, perc_test=perc_test, perc_valid=perc_valid)
+    # get training data
     ts_training = read_from_file("perc_training.csv")
-    matrix = design_matrix(ts_training)
+    # what part of the history we are taking ie what indexes of training we are taking
+    # what the future to expect
+    # take leftmost to right most of time series - ie from top(left) to bottom(right)
+    # should have it so this v takes the first design_matrix function to produce
+    matrix = design_matrix(ts_training, input_index, output_index)
     dt_matrix = pd.DataFrame(matrix, columns=['Data'])
     dt_matrix.drop(dt_matrix.index[0], axis=0, inplace=True)
+    # take matrix and write to file to train model
     write_to_file(output_file, dt_matrix)
-
-
