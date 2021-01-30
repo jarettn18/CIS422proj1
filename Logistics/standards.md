@@ -17,18 +17,23 @@ The following information is intended to improve modularity and later integratio
   * Any quirks of data expectations - for example, if it expects ints to be non-zero
 
 * It is assumed that the functions explicitly described in the document will have the same signature as it appears in the document.
+  * UPDATE on 1/29: The handful of splitting functions may deviate as needed to work with the Transformation Tree.
 
 * The three files that will represent modules 3.1/3.2, 3.3, and 3.4 are all expected to contain only the explicitly described functions in the project description.
   * For each module, any helpers should be relegated to a single helper file for that module if possible (with a file name that reflects that purpose, for example preprocessing_helper.py helps preprocessing.py). This should help compartmentalize code and make it easier to check progress.
   * Tests for each module (every significant function should be tested) are expected to reside in a similarly named file (for example preprocessing_tests.py).
+
+* The Transformation Tree will be another separate module, but more accessible to the user.
 
 * If a module requires a library or package, documentation for how to install the library or package locally in the module header must be present (through pip, Anaconda, or wherever else) so the other engineers may configure their environments to match.
   * We will later collect this information into one place to describe how to run our code.
 
 * It is assumed that we will be using Python 3.8 for the bulk of the project.
 
+* Tasks will be assigned at full group meetings, but will be adjusted as needed as we discover the actual time it takes to complete tasks.
+
 
 ### Data Expectations
 -------------------
 * A time series will be a csv of the form (time0,magnitude0),(time1,magnitude1),...,(timeN,magnitudeN) where time and magnitude are both non-negative values.
-  * Note: Logan and Jarett may have further input on this since Logan will be responsible for outputting data in this form and Jarett will be responsible for inputting data of this form.
+  * There are some input files with either the time values missing or with an extra column. These will be handled by the user using the preprocessing functions as needed.

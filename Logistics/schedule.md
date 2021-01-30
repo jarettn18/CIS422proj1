@@ -17,6 +17,21 @@ Internal schedule for completing software goals.
   * Write SRS and SDS documents
 * Goal: Finish Phase 1 by 1/28
 
+UPDATE as of 1/29:
+* Nearly done with Phase 1, ran into hiccups understanding the given function signatures and general data flow. Should be finishing the rest of the core functionality today, though unclear if the evaluation and visualization code is close.
+
+
 ### Phase 2
 -----------
 * Goal: Finish Phase 2 by 1/5
+  * We want to establish the tree and node classes by 1/31
+  * We want to have a method for adding nodes to a tree by 1/2 so we can test and develop the rest of the methods
+  * We want to have the execution functions and the rest described in step 5 by 1/4 (though the save/load functions can wait, as they are not critical for a demonstration on 1/5)
+
+### Phase 3 (last minute tasks and cleanup)
+-------------------------------------------
+* Goal: Finish Phase 3 by 1/9
+  * Ensure documentation is up to date and all tracking has been reported
+  * Convert all relevant .docx or .xlsx files to .pdf
+  * Update README to have instructions for installation/use
+  * Ensure the saving and loading functions are working

@@ -60,3 +60,11 @@ Tracking for meeting date, time, duration, and content.
 6:00pm-6:20pm (Zeke, Logan, Jack, Callista)
 * Discussed the questions we will be asking Juan tomorrow about the rigidity of the function signatures provided and to make sure our pipeline understanding is accurate.
 * Clarified some code hygeine standards (headers, compartmentalizing test code, etc)
+
+### 1/29/2021 - Meeting with client
+-----------------------------------
+2:00pm-2:20pm (all memebers present)
+* Clarified that we do not have to rigidly adhere to the given function signatures
+* Discussed how the design_matrix and ts2db functions work
+* Discussed arguments for the mlp and rf models
+* Learned that the presentation in 1 week will be a demonstration of a working or mostly working project.
