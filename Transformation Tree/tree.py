@@ -9,55 +9,14 @@ Version 0.1.0
 Basic Tree implementation
 """
 
-# Represents a node of an n-ary tree using a node Class
-class Node: 
-
-    # creating a new tree node
-    def __init__(self ,key):
-        self.key = key
-        self.child = []
-        self.folder = []
-
-
-# Prints the n-ary tree level wise
-"""
-def find_function(operation):
-    #if operation == "some key word"
-    #    call the correlating function
-    #    make sure the altered data replaces the original data
-    #    for the next "step"
-    print("------")
-"""
-
-
-def replace(self, old, new):
-    """
-    Function to replace a process step with a different operator, such as
-        replacing denoise() with clip()
-    :param self: binding arguments with class Node
-           old: the orignal process step that will be replaced
-           new: the different operator, that will be taking the place of the original
-               operator
-    : return: returns None
-    """
-    #still need to check that old and new nodes are in same "category"
-    if old is not None:
-        #if old.key == new.key:
-        #old = new
-        self.folder.append(new)
-        self.folder.remove(old)
-        
-        #print(old.key)
-        return None
-    #for child in old.child:
-     #   self.replace(child, new)
+import node as nodefile
+from node import Node
 
 def replicate_subtree(self, root_node):
     """
     Replicating a Subtree and printing it using printNode
     : param self: binding arguments with class Node
             root_node: the root of the subtree wishing to be replicated
-
     : return: returns the root of the newly replicated subtree
     """
     print("This is the new root of a new subtree: " + root_node.key)
@@ -94,7 +53,6 @@ def save_tree(root):
     :return: ??? do we want a CSV file?
     """
 
-
 def save_pipeline(root, end):
     """
     Takes a pipeline from a given root and a given end and saves/stores the
@@ -105,16 +63,15 @@ def save_pipeline(root, end):
     """
 
 """
-
 def replicate_path(self, array, end_node):
-    
+
     Function will start the path at the root of the tree and finish at end_node,
         the parameter of the function
     :param self: binding arguments with class Node
            end_node: the last node/leaf of the path, where the path comes to a stop
     :return: returns none
 """
-    
+
 """
     if(not roots):
         print("Cannot have a path without a root")
@@ -128,7 +85,7 @@ def replicate_path(self, array, end_node):
     end_nodes = Node(end_node.key)
     array.append(self)
     print(array[0])
-    
+
     if(root_node.key == end_nodes.key):
         print("this is true")
         return True
@@ -138,7 +95,6 @@ def replicate_path(self, array, end_node):
     print("anything here")
     array.pop(-1)
     return False
-
 def print_path(root, ending):
     array = []
     if(replicate_path(root, array, ending)):
@@ -147,36 +103,35 @@ def print_path(root, ending):
         print(array[len(array)-1])
     else:
         print("no path found")
-    
-    
-"""
 
+
+"""
 
 def printNode(root):
     # if there is no root, return none
-    if root is None: 
+    if root is None:
         return
-	
+
     # create a queue and enqueue root to it using append
-    queue = [] 
-    queue.append(root) 
+    queue = []
+    queue.append(root)
 
     # Carry out level order traversal.
     # The double while loop is used to make sure that
     #     each level is printed on a different line
-	
-    while(len(queue) >0): 
 
-        n = len(queue) 
+    while(len(queue) >0):
+
+        n = len(queue)
         while(n > 0):
-            # Dequeue an item from the queue and print it 
-            p = queue[0] 
+            # Dequeue an item from the queue and print it
+            p = queue[0]
             queue.pop(0)
             #if(p.key == "root"):
                 #print("root found")
-                
+
             print(p.key)
-            # Enqueue all of the children of the dequeued node 
+            # Enqueue all of the children of the dequeued node
             for index, value in enumerate(p.child):
                 #for index, value in enumerate(p.folder):
                 queue.append(value)
