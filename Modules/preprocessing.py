@@ -13,7 +13,9 @@ import math
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import datetime as dt
-#import janitor as pyj
+
+
+# import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -107,10 +109,10 @@ def longest_continuous_run(time_series):
     # if lr_index is empty then there are no NaN's
     if len(lr_index) > 0:
         diff = lr_index[1] - lr_index[0]
-    #    # placeholder for start,stop indexes
+        #    # placeholder for start,stop indexes
         first_idx = 0
         last_idx = 1
-    #    # loop through array getting difference of consecutive values
+        #    # loop through array getting difference of consecutive values
         for idx in range(0, len(lr_index)):
             if idx == (len(lr_index) - 1):
                 if len(time_series.index) - lr_index[idx] > diff:
@@ -141,9 +143,9 @@ def clip(time_series, starting_date, final_date) -> object:
     dates = time_series.columns[0]
     clipped = time_series.copy()
     # call filter_date function to get dates/values
-    #filtered = clipped.filter_date(dates, starting_date, final_date)
+    # filtered = clipped.filter_date(dates, starting_date, final_date)
     # return time frame
-    #return filtered
+    # return filtered
 
 
 def assign_time(time_series, start, increment):
@@ -317,10 +319,12 @@ def design_matrix(time_series, input_index, output_index):
     tmp_ts = time_series.copy()
     time_col = tmp_ts.columns[0]
     mst_col = tmp_ts.columns[len(tmp_ts.columns) - 2]
-    t = len(tmp_ts)
-    for idx in reversed(range(0, t, 5)):
-        input_index.append(idx)
-    output_index.append(t + 5)
+    data_col = tmp_ts.columns[len(tmp_ts.columns) - 1]
+    # t = len(tmp_ts)
+    for i_idx in range(len(input_index)):
+        input_index[i_idx] = tmp_ts.at[input_index[i_idx], data_col]
+    for o_idx in range(len(output_index)):
+        output_index[o_idx] = tmp_ts.at[output_index[o_idx], data_col]
     # remove time column - not necessary
     # axis=1 specifies Columns
     tmp_ts.drop([time_col], axis=1, inplace=True)
@@ -332,23 +336,46 @@ def design_matrix(time_series, input_index, output_index):
     return ts_matrix
 
 
-def design__matrix(time_series, m_i, t_i, m_0, t_0, inputs, outputs):
+def design__matrix(time_series, m_i, t_i, m_O, t_O):
     """
     Creates a Matrix up to certain position of Time series
     depends on m_i & t_i
     :param time_series: Time series data
-    :param m_i: magnitude at index I - input
-    :param t_i: timestamp at index I - change
-    :param m_0: magnitude of index 0 - predicted mag
-    :param t_0: timestamp of index 0 - predicted time
-    :return: Matrix of time series data up to m_i & t_i
+    :param m_i: number of readings used from Training
+    :param t_i: distance between each index in used from training
+    :param m_O: number of output readings for prediction
+    :param t_O: ticks between output readings in prediction
+    :return: Matrix of time series data
     """
-    # Needs further Discussion with Zeke/Jarett
     ts_train = time_series.copy()
-    design_matrix(ts_train, inputs, outputs)
-
+    # convert m_i, t_i into input index
+    # convert m_O, t_O into output index
+    inputs = []
+    outputs = []
+    # number of input indexes to take
+    length_in = m_i
+    # spaces apart
+    space_in = t_i
+    t = (len(ts_train) // 2)
+    for idx in reversed(range(0, t, space_in)):
+        if len(inputs) == length_in:
+            break
+        else:
+            inputs.append(idx)
+    length_o = m_O
+    # spaces apart
+    space_o = t_O
+    for x in range(t, len(ts_train), space_o):
+        if len(outputs) == length_o:
+            break
+        else:
+            outputs.append(x)
+    # inputs now has array of indexes spaced apart t_i
+    # outputs now has array of indexes spaced apart t_O
+    matrix = design_matrix(ts_train, inputs, outputs)
+    # num of output indexes to take
     # take the values of input/output index and create matrix to return
-    return design_matrix(ts_train, inputs, outputs)
+    return matrix
 
 
 def ts2db(input_file, perc_training, perc_valid, perc_test, input_index,
@@ -376,8 +403,13 @@ def ts2db(input_file, perc_training, perc_valid, perc_test, input_index,
     # what the future to expect
     # take leftmost to right most of time series - ie from top(left) to bottom(right)
     # should have it so this v takes the first design_matrix function to produce
-    matrix = design_matrix(ts_training, input_index, output_index)
-    dt_matrix = pd.DataFrame(matrix, columns=['Data'])
+    # if not given input/output index get random ones
+    matrix_other = design__matrix(ts_training, 5, 40, 5, 30)
+    # else create matrix and using pre-made loop, create one
+    # giving input/output index values
+    design_matrix(ts_training, input_index, output_index)
+    dt_matrix = pd.DataFrame(matrix_other, columns=['Data'])
     dt_matrix.drop(dt_matrix.index[0], axis=0, inplace=True)
     # take matrix and write to file to train model
     write_to_file(output_file, dt_matrix)
+    return dt_matrix
