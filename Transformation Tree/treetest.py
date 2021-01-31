@@ -1,7 +1,22 @@
+"""
+File: treetest.py
+Class: CIS 422
+Date: January 23, 2020
+Team: The Nerd Herd
+Head Programmer: Callista West
+Version 0.1.0
+Testing of tree.py and node.py
+"""
+
+
 import tree as tree1
-#from tree import Node
 import node as nodefile
 from node import Node
+from node import prepNode
+from node import splitNode
+from node import modelNode
+from node import visualizeNode
+from node import evalNode
 
 if __name__ == '__main__':
 
