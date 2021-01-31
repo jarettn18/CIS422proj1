@@ -11,6 +11,11 @@ Basic Tree implementation
 
 import node as nodefile
 from node import Node
+from node import prepNode
+from node import splitNode
+from node import modelNode
+from node import visualizeNode
+from node import evalNode
 
 def replicate_subtree(self, root_node):
     """
