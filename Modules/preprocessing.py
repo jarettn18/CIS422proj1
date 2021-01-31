@@ -1,10 +1,10 @@
 """
 File: preprocessing.py
 Class: CIS 422
-Date: January 28, 2021
+Date: January 30, 2021
 Team: The Nerd Herd
 Head Programmer: Logan Levitre
-Version 1.0.0
+Version 1.0.01
 
 Overview: Preprocessing functions to be used with Time Series Data.
 """
@@ -13,7 +13,7 @@ import math
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import datetime as dt
-import janitor as pyj
+#import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -97,13 +97,12 @@ def longest_continuous_run(time_series):
     :param time_series: Time series data
     :return: new a time series without any missing data or outliers
     """
-    # copy time_series
-    longest_run_ts = time_series.copy()
+    # copy time_series   
     # DISCLAIMER: Code lines 92-101 Referenced from
     # https://stackoverflow.com/questions/41494444/pandas-find-longest-stretch-without-nan-values
     # get data values and store as array
-    data_col = longest_run_ts.columns[len(longest_run_ts.columns) - 1]
-    lr_index = longest_run_ts.index[pd.isna(longest_run_ts[data_col])].tolist()
+    data_col = time_series.columns[len(time_series.columns) - 1]
+    lr_index = time_series.index[pd.isna(time_series[data_col])].tolist()
     # find difference between index of TS
     # if lr_index is empty then there are no NaN's
     if len(lr_index) > 0:
@@ -114,24 +113,19 @@ def longest_continuous_run(time_series):
     #    # loop through array getting difference of consecutive values
         for idx in range(0, len(lr_index)):
             if idx == (len(lr_index) - 1):
-                if len(longest_run_ts.index) - lr_index[idx] > diff:
-                    diff = len(longest_run_ts.index) - lr_index[idx]
+                if len(time_series.index) - lr_index[idx] > diff:
+                    diff = len(time_series.index) - lr_index[idx]
                     first_idx = lr_index[idx] + 1
-                    last_idx = (len(longest_run_ts) - 1)
+                    last_idx = (len(time_series) - 1)
             elif lr_index[idx + 1] - lr_index[idx] > diff:
                 diff = lr_index[idx + 1] - lr_index[idx]
                 first_idx = lr_index[idx]
                 last_idx = lr_index[idx + 1]
         # get start/stop times from TS at indexed locations
-
-        time_col = time_series.columns[0]
-        start_time = time_series.at[first_idx, time_col]
-        end_time = time_series.at[last_idx - 1, time_col]
-        # clip time_series from start to stopping point to get longest run
-        #data = [ x in range(time_series[start_time], time_series[end_time])]
-        longest_run_ts = clip(time_series, start_time, end_time)
-        return longest_run_ts
-    return longest_run_ts
+        # create new DataFrame of sliced portion
+        clipped_data = time_series.loc[first_idx:last_idx]
+        return clipped_data
+    return time_series
 
 
 def clip(time_series, starting_date, final_date) -> object:
@@ -147,9 +141,9 @@ def clip(time_series, starting_date, final_date) -> object:
     dates = time_series.columns[0]
     clipped = time_series.copy()
     # call filter_date function to get dates/values
-    filtered = clipped.filter_date(dates, starting_date, final_date)
+    #filtered = clipped.filter_date(dates, starting_date, final_date)
     # return time frame
-    return filtered
+    #return filtered
 
 
 def assign_time(time_series, start, increment):
@@ -161,20 +155,24 @@ def assign_time(time_series, start, increment):
     :param increment: difference to add to next timestamp
     :return: a new time_series with timestamps assigned to each entry
     """
-    new_series = time_series.copy()
-    new_series.insert(loc=0, column='Timestamp: Hour', value='')
-    column_list = new_series.columns[0]
-    # MM/DD/YYYY
+    data_col = time_series.columns[len(time_series.columns) - 1]
+    new_ts = pd.DataFrame(columns=['Timestamp: Hour:', 'Data'])
+    for x in time_series.index:
+        new_ts.loc[x] = time_series.at[x, data_col]
+
+    column_list = new_ts.columns[0]
+    # MM/DD/YYYY - get each segment of input to create datetime obj
     date_splice = start.split(sep="/")
     date_year = int(date_splice[2])
     date_month = int(date_splice[0])
     date_day = int(date_splice[1])
     date = dt.datetime(date_year, date_month, date_day)
-    for idx in new_series.index:
-        new_series.at[idx, column_list] = date
+    # insert time into DataFrame
+    for idx in new_ts.index:
+        new_ts.at[idx, column_list] = date
         date += dt.timedelta(hours=increment)
 
-    return new_series
+    return new_ts
 
 
 def difference(time_series):
