@@ -1,9 +1,12 @@
 import tree as tree1
-from tree import Node
+#from tree import Node
+import node as nodefile
+from node import Node
 
 if __name__ == '__main__':
 
-    root = Node("root")
+    root = nodefile.add_root("read_from_file")
+    #root = Node("root")
 
     prep = Node("preprocessing")
     root.child.append(prep)
@@ -20,15 +23,17 @@ if __name__ == '__main__':
     visual2 = Node("visualization 2")
     mlp.child.append(visual)
     rf.child.append(visual2)
-    
+
     print("Level order traversal with new nodes added\n")
     test_print = tree1.printNode(root)
 
-    test_replace = tree1.replace(prep, denoise, clip)
+    test_replace = nodefile.replace(prep, denoise, clip)
 
     test_replicate_ST = tree1.replicate_subtree(root, rf)
 
     test_add_ST = tree1.add_subtree(root, mlp, visual2)
+
+    test_add_node = nodefile.add_node(root, mlp, "new_visual")
 
     #print_path(root, mlp)
 
