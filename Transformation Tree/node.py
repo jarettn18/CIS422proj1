@@ -79,6 +79,20 @@ def execute():
     """
     Use this function when the tree executes
     """
+    
+class modelNode:
+
+    def __init__(self, x_train, y_train, input_dimension, output_dimension, hidden_layers):
+        self.x_train = x_train
+        self.y_train = y_train
+        self.input_dimension = input_dimension
+        self.output_dimension = output_dimension
+        self.hidden_layers = hidden_layers
+
+def execute_tree():
+    """
+    Function will execute the tree
+    """
 
 class splitNode:
 
