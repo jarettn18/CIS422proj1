@@ -285,20 +285,32 @@ def split_data(time_series, perc_training, perc_valid, perc_test):
     :param perc_test: percentage of time series data to be used for testing
     :return: None
     """
+    # Create error handling for if percentages are of same val for equal comparison
     if perc_training >= perc_valid:
-        # Create error handling for if percentages are of same val for equal comparison
+        # Get length of ts
         ts_size = len(time_series.index)
+        # get percentage val to be perc
         test_perc = (perc_test / 100)
+        # get percentage val to be valid
         test_valid = (perc_valid / 100)
+        # get percentage val to be training
         test_training = (perc_training / 100)
+        # size of training Data
         t_p_l = int((ts_size * test_perc))
+        # size of validation Data
         t_v_l = int((ts_size * test_valid))
+        # size of training Data
         t_t_l = int((ts_size * test_training))
+        # cut TS based on percentage for Training
         p_tr_cut = time_series.iloc[:t_t_l, :]
         p_tr_cut.to_csv("perc_training.csv", index=False)
-        p_v_cut = time_series.iloc[t_t_l + 1:(t_v_l + t_t_l), :]
+        # cut TS based on percentage for Training
+        # - from end of Training Data to length of Validation
+        p_v_cut = time_series.iloc[t_t_l:(t_v_l + t_t_l), :]
         p_v_cut.to_csv("perc_valid.csv", index=False)
-        p_test_cut = time_series.iloc[t_p_l + 1:ts_size, :]
+        # cut TS based on percentage from Training
+        # - from end of valid Data to end of DataFrame
+        p_test_cut = time_series.iloc[(t_p_l + t_t_l):, :]
         p_test_cut.to_csv("perc_test.csv", index=False)
     else:
         print("Error: Training percentage and Validation percentage "
@@ -408,7 +420,7 @@ def ts2db(input_file, perc_training, perc_valid, perc_test, input_index,
     # take leftmost to right most of time series - ie from top(left) to bottom(right)
     # should have it so this v takes the first design_matrix function to produce
     # if not given input/output index get random ones
-    matrix_other = design__matrix(ts_training, 5, 40, 5, 30)
+    matrix_other = design__matrix(ts_training, 5, 10, 5, 15)
     # else create matrix and using pre-made loop, create one
     # giving input/output index values
     design_matrix(ts_training, input_index, output_index)
