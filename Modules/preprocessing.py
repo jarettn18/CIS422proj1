@@ -1,10 +1,10 @@
 """
 File: preprocessing.py
 Class: CIS 422
-Date: January 30, 2021
+Date: January 31, 2021
 Team: The Nerd Herd
 Head Programmer: Logan Levitre
-Version 1.0.01
+Version 1.0.1
 
 Overview: Preprocessing functions to be used with Time Series Data.
 """
@@ -317,8 +317,8 @@ def design_matrix(time_series, input_index, output_index):
     #### BEFORE TAKING TIME AWAY
     # are we to create/ find algo that takes input and makes it output?
     tmp_ts = time_series.copy()
-    time_col = tmp_ts.columns[0]
-    mst_col = tmp_ts.columns[len(tmp_ts.columns) - 2]
+    columns = len(tmp_ts.columns)
+
     data_col = tmp_ts.columns[len(tmp_ts.columns) - 1]
     # t = len(tmp_ts)
     for i_idx in range(len(input_index)):
@@ -327,8 +327,11 @@ def design_matrix(time_series, input_index, output_index):
         output_index[o_idx] = tmp_ts.at[output_index[o_idx], data_col]
     # remove time column - not necessary
     # axis=1 specifies Columns
-    tmp_ts.drop([time_col], axis=1, inplace=True)
-    tmp_ts.drop([mst_col], axis=1, inplace=True)
+    if columns == 2:
+        tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
+    if columns == 3:
+        tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
+        tmp_ts.drop([tmp_ts.columns[1]], axis=1, inplace=True)
     # create patsy dmatrix using formula for linear regression
     # passing time series data into it - returns a matrix
     # Convert TS to numpy array - Matrix
@@ -373,6 +376,7 @@ def design__matrix(time_series, m_i, t_i, m_O, t_O):
     # inputs now has array of indexes spaced apart t_i
     # outputs now has array of indexes spaced apart t_O
     matrix = design_matrix(ts_train, inputs, outputs)
+    print(matrix)
     # num of output indexes to take
     # take the values of input/output index and create matrix to return
     return matrix
@@ -408,7 +412,7 @@ def ts2db(input_file, perc_training, perc_valid, perc_test, input_index,
     # else create matrix and using pre-made loop, create one
     # giving input/output index values
     design_matrix(ts_training, input_index, output_index)
-    dt_matrix = pd.DataFrame(matrix_other, columns=['Data'])
+    dt_matrix = pd.DataFrame(matrix_other)
     dt_matrix.drop(dt_matrix.index[0], axis=0, inplace=True)
     # take matrix and write to file to train model
     write_to_file(output_file, dt_matrix)
