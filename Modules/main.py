@@ -26,7 +26,8 @@ def main():
 
 	#Get File Path
 	current_path = os.path.dirname(os.getcwd())
-	fname = current_path + "/TestData/WindSpeed2010Jan20mMin.csv"
+	fname = current_path + "/TestData/1_temperature_train.csv"
+	fname_test = current_path + "/TestData/1_temperature_test.csv"
 
 	#Read and Preprocess Data from File
 	data = prep.read_from_file(fname)
@@ -38,7 +39,9 @@ def main():
 	#Transform Time Series data to Data base
 	inputs, outputs = [], []
 
+	#TODO
 	db = prep.ts2db("data_denoised.csv", 50, 25, 25, inputs, outputs, "outputs.csv")
+
 	train_data_unprepped = prep.read_from_file("perc_training.csv")
 	valid_data_unprepped = prep.read_from_file("perc_valid.csv")
 	test_data_unprepped = prep.read_from_file("perc_test.csv")
@@ -47,17 +50,14 @@ def main():
 	valid_data = prep.design_matrix(valid_data_unprepped, inputs, outputs)
 	test_data = prep.design_matrix(test_data_unprepped, inputs, outputs)
 
-
-	print(len(train_data))
-	print(len(test_data))
-	print(len(valid_data))
-		
+	print(train_data)
+	print(db)
 
 	mlp = mp.mlp_model()
-	mlp.fit(train_data, valid_data)
-	forecast = mlp.forecast(test_data)
+	mlp.fit(train_data, db)
+	forecast = mlp.forecast(train_data)
 	print(forecast)
-	
+
 	"""
 	data_op = prep.read_from_file(fname)
 	denoised_data = prep.denoise(data_op)

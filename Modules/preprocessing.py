@@ -388,7 +388,6 @@ def design__matrix(time_series, m_i, t_i, m_O, t_O):
     # inputs now has array of indexes spaced apart t_i
     # outputs now has array of indexes spaced apart t_O
     matrix = design_matrix(ts_train, inputs, outputs)
-    print(matrix)
     # num of output indexes to take
     # take the values of input/output index and create matrix to return
     return matrix
