@@ -13,9 +13,7 @@ import math
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import datetime as dt
-
-
-# import janitor as pyj
+import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -143,9 +141,9 @@ def clip(time_series, starting_date, final_date) -> object:
     dates = time_series.columns[0]
     clipped = time_series.copy()
     # call filter_date function to get dates/values
-    # filtered = clipped.filter_date(dates, starting_date, final_date)
+    filtered = clipped.filter_date(dates, starting_date, final_date)
     # return time frame
-    # return filtered
+    return filtered
 
 
 def assign_time(time_series, start, increment):
