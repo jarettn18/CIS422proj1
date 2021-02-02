@@ -27,66 +27,27 @@ def main():
 
 	#Get File Path
 	current_path = os.path.dirname(os.getcwd())
-	fname = current_path + "/TestData/1_temperature_train.csv"
-	fname_test = current_path + "/TestData/1_temperature_test.csv"
+	fname = current_path + "/TestData/4_irradiance_train.csv"
+	fname_test = current_path + "/TestData/4_irradiance_test.csv"
 
 	#Read and Preprocess Data from File
+	test = prep.read_from_file(fname_test)
+	denoised_test = prep.denoise(test)
+
 	data = prep.read_from_file(fname)
 	denoised_data = prep.denoise(data)
 
-	x = denoised_data.values.reshape(1,-1)
-	x = x[0]
-	y = denoised_data.values
+	ts, inputs = prep.design_matrix(denoised_data)
+	ts_test, inputs_test = prep.design_matrix(denoised_test)
 
-	print(x)
-	print(y)
-
-
-	inputs = []
-	outputs = []
-	z = 0
-	h = 0
-	for i in denoised_data.index:
-		j = []
-		j.append(z)
-		inputs.append(j)
-		#outputs.append(float(denoised_data['18.6'][i]))
-		z += 1
-	"""
-	#Write to intermediary training file
-	prep.write_to_file("data_denoised.csv", denoised_data)
-
-	#Transform Time Series data to Data base
-	inputs, outputs = [], []
-	
-	#TODO
-	db = prep.ts2db("data_denoised.csv", 50, 25, 25, inputs, outputs, "outputs.csv")
-
-	train_data_unprepped = prep.read_from_file("perc_training.csv")
-	valid_data_unprepped = prep.read_from_file("perc_valid.csv")
-	test_data_unprepped = prep.read_from_file("perc_test.csv")
-
-	train_data = prep.design_matrix(train_data_unprepped, inputs, outputs)
-	valid_data = prep.design_matrix(valid_data_unprepped, inputs, outputs)
-	test_data = prep.design_matrix(test_data_unprepped, inputs, outputs)
-
-	print(train_data)
-	print(db)
-	"""
 	mlp = mp.mlp_model()
-	mlp.fit(y, x)
-	forecast = mlp.forecast([[18.6], [2], [3], [4]])
-	print(forecast)
+	mlp.fit(inputs, ts)
+	forecast = mlp.forecast(inputs_test)
+	print(ts[0:100])
+	print(forecast[0:100])
 
-	#forecast = mlp.forecast(train_data)
-	#print(forecast)
 
-	"""
-	data_op = prep.read_from_file(fname)
-	denoised_data = prep.denoise(data_op)
-
-	print(denoised_data)
-	"""
+	
 
 if __name__ == '__main__':
 	main()

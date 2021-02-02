@@ -325,15 +325,13 @@ def design_matrix(time_series, input_index, output_index):
     """
     #### BEFORE TAKING TIME AWAY
     # are we to create/ find algo that takes input and makes it output?
+    inputs = []
     tmp_ts = time_series.copy()
     columns = len(tmp_ts.columns)
 
     data_col = tmp_ts.columns[len(tmp_ts.columns) - 1]
-    # t = len(tmp_ts)
-    for i_idx in range(len(input_index)):
-        input_index[i_idx] = tmp_ts.at[input_index[i_idx], data_col]
-    for o_idx in range(len(output_index)):
-        output_index[o_idx] = tmp_ts.at[output_index[o_idx], data_col]
+    # t = len(tmp_ts)'
+
     # remove time column - not necessary
     # axis=1 specifies Columns
     if columns == 2:
@@ -348,7 +346,9 @@ def design_matrix(time_series, input_index, output_index):
     # Convert TS to numpy array - Matrix
     # convert data to array
     ts_matrix = tmp_ts.to_numpy()
-    return ts_matrix
+    ts_matrix = ts_matrix.reshape(1, -1)
+    ts_matrix = ts_matrix[0]
+    return ts_matrix, inputs
 
 
 def design__matrix(time_series, m_i, t_i, m_O, t_O):
