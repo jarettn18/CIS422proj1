@@ -27,10 +27,10 @@ if __name__ == '__main__':
     # data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/1_temperature_train.csv"
     # data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/FRB_H15 NonFinancial.csv"
     # TS2DB
-    # inputs = []
-    # outputs = []
-    # da = prep.ts2db(data, 50, 25, 25, inputs, outputs, "data_op.csv")
-    # print(da)# works
+    inputs = []
+    outputs = []
+    da = prep.ts2db(data, 50, 25, 25, inputs, outputs, "data_op.csv")
+    print(da)# works
     # ----------------
     # inputs from left to right(up to down) array is of t-x
     # t being time now. i.e input_index[0] = t - 0 = t  , input_index[1]  = t + (-x) = t-x

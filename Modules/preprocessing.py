@@ -340,11 +340,14 @@ def design_matrix(time_series, input_index, output_index):
     if columns == 2:
         tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
     if columns == 3:
+        # remove time column
         tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
-        tmp_ts.drop([tmp_ts.columns[1]], axis=1, inplace=True)
+        # remove MST/Other column
+        tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
     # create patsy dmatrix using formula for linear regression
     # passing time series data into it - returns a matrix
     # Convert TS to numpy array - Matrix
+    # convert data to array
     ts_matrix = tmp_ts.to_numpy()
     return ts_matrix
 
@@ -422,7 +425,7 @@ def ts2db(input_file, perc_training, perc_valid, perc_test, input_index,
     # giving input/output index values
     design_matrix(ts_training, input_index, output_index)
     dt_matrix = pd.DataFrame(matrix_other)
-    dt_matrix.drop(dt_matrix.index[0], axis=0, inplace=True)
+    # dt_matrix.drop(dt_matrix.index[0], axis=0, inplace=True)
     # take matrix and write to file to train model
     write_to_file(output_file, dt_matrix)
     return dt_matrix
