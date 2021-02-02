@@ -342,7 +342,7 @@ def design_matrix(time_series, input_index, output_index):
         tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
     if columns == 3:
         # remove time column
-        tmp_ts.drop([tmp_ts.columns[1]], axis=1, inplace=True)
+        tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
         # remove MST/Other column
         tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
     # create patsy dmatrix using formula for linear regression
