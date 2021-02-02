@@ -1,20 +1,18 @@
 """
 File: preprocessing.py
 Class: CIS 422
-Date: January 31, 2021
+Date: Febuary 2, 2021
 Team: The Nerd Herd
 Head Programmer: Logan Levitre
-Version 1.0.1
+Version 1.0.5
 
 Overview: Preprocessing functions to be used with Time Series Data.
 """
-#import math
-
 import pandas as pd
 from math import pow, log10
 from sklearn.preprocessing import MinMaxScaler
 import datetime as dt
-#import janitor as pyj
+import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -142,9 +140,9 @@ def clip(time_series, starting_date, final_date) -> object:
     dates = time_series.columns[0]
     clipped = time_series.copy()
     # call filter_date function to get dates/values
-    #filtered = clipped.filter_date(dates, starting_date, final_date)
+    filtered = clipped.filter_date(dates, starting_date, final_date)
     # return time frame
-    #return filtered
+    return filtered
 
 
 def assign_time(time_series, start, increment):
@@ -342,7 +340,7 @@ def design_matrix(time_series, input_index, output_index):
         tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
     if columns == 3:
         # remove time column
-        tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
+        tmp_ts.drop([tmp_ts.columns[1]], axis=1, inplace=True)
         # remove MST/Other column
         tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
     # create patsy dmatrix using formula for linear regression
