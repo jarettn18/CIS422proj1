@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split
 
 class mlp_model():
 
-    def __init__(self, input_dimension=2, output_dimension=1, layers=500):
+    def __init__(self, input_dimension=2, output_dimension=1, layers=700):
         """
         Initializes an MLP model with SKLearn's default params
         :param input_dimension: ?

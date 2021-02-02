@@ -314,7 +314,7 @@ def split_data(time_series, perc_training, perc_valid, perc_test):
               + "must be equal")
 
 
-def design_matrix(time_series, input_index, output_index):
+def design_matrix(time_series,):
     """
     Creates a matrix of time series data
     while adding to input/output index
@@ -331,7 +331,8 @@ def design_matrix(time_series, input_index, output_index):
 
     data_col = tmp_ts.columns[len(tmp_ts.columns) - 1]
     # t = len(tmp_ts)'
-
+    for i in range(len(tmp_ts.values)):
+	    inputs.append([i])
     # remove time column - not necessary
     # axis=1 specifies Columns
     if columns == 2:
