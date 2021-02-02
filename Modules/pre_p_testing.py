@@ -4,7 +4,10 @@ if __name__ == '__main__':
     tmp = 0
     data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/WindSpeed2010Jan20mMin.csv"
     data_op = prep.read_from_file(data)
-    prep.split_data(data_op, 50, 25, 25)
+    log = prep.cubic_roots(data_op)
+    prep.write_to_file("cubed.csv", log)
+    prep.write_to_file("logged.csv", prep.logarithm(data_op))
+    # prep.split_data(data_op, 50, 25, 25)
     # cleaned = prep.denoise(data_op)
     # clip = prep.clip(data_op, "1/1/2010", "1/5/2010")
     # print(clip)# works

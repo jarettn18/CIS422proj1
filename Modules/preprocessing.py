@@ -8,12 +8,13 @@ Version 1.0.1
 
 Overview: Preprocessing functions to be used with Time Series Data.
 """
+#import math
+
 import pandas as pd
-import math
+from math import pow, log10
 from sklearn.preprocessing import MinMaxScaler
-import numpy as np
 import datetime as dt
-import janitor as pyj
+#import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -141,9 +142,9 @@ def clip(time_series, starting_date, final_date) -> object:
     dates = time_series.columns[0]
     clipped = time_series.copy()
     # call filter_date function to get dates/values
-    filtered = clipped.filter_date(dates, starting_date, final_date)
+    #filtered = clipped.filter_date(dates, starting_date, final_date)
     # return time frame
-    return filtered
+    #return filtered
 
 
 def assign_time(time_series, start, increment):
@@ -250,7 +251,7 @@ def logarithm(time_series):
     for idx in log_10_time_series.index:
         # go through each row of last column - assign cubed root of value at each
         # index of the column
-        log_10_time_series.at[idx, data_col] = math.log10(log_10_time_series.at[idx, data_col])
+        log_10_time_series.at[idx, data_col] = log10(log_10_time_series.at[idx, data_col])
     return log_10_time_series
 
 
@@ -269,7 +270,7 @@ def cubic_roots(time_series):
     for idx in cubed_time_series.index:
         # go through each row of last column - assign cubed root of value at each
         # index of the column - idx = row
-        cubed_time_series.at[idx, data_col] = math.pow(cubed_time_series.at[idx, data_col], 1 / 3)
+        cubed_time_series.at[idx, data_col] = pow(cubed_time_series.at[idx, data_col], 1 / 3)
     return cubed_time_series
 
 
@@ -341,7 +342,7 @@ def design_matrix(time_series, input_index, output_index):
         tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
     if columns == 3:
         # remove time column
-        tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
+        tmp_ts.drop([tmp_ts.columns[1]], axis=1, inplace=True)
         # remove MST/Other column
         tmp_ts.drop([tmp_ts.columns[0]], axis=1, inplace=True)
     # create patsy dmatrix using formula for linear regression
