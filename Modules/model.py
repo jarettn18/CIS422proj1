@@ -15,20 +15,21 @@ import pandas as pd
 import math
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.neural_network import MLPRegressor
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 
 
 class mlp_model():
 
-    def __init__(self, input_dimension=2, output_dimension=1, layers=100):
+    def __init__(self, input_dimension=2, output_dimension=1, layers=500):
         """
         Initializes an MLP model with SKLearn's default params
         :param input_dimension: ?
         :param output_dimension: ?
         :param layers: The ith element represents the number of neronds in the ith hidden layer
         """
-        self.model = MLPClassifier(hidden_layer_sizes=layers, max_iter=300, )
+        self.model = MLPRegressor(hidden_layer_sizes=layers, max_iter=300, )
         self.input_d = input_dimension
         self.output_d = output_dimension
 

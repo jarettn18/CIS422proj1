@@ -23,7 +23,7 @@ def read_from_file(input_file):
     :param input_file: file passed to function containing Time Series Data
     :return: returns DataFrame object declared time_series
     """
-    time_series = pd.read_csv(input_file)
+    time_series = pd.read_csv(input_file, parse_dates=True)
     return time_series
 
 

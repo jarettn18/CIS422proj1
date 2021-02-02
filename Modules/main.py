@@ -10,12 +10,13 @@ Overview: Main file for Machine Learning Models + Statistics Visualization
 """
 import preprocessing as prep
 import model as mp
+import pandas as pd
+import numpy as np
 import math
 import os
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
-from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 
 """
@@ -33,12 +34,31 @@ def main():
 	data = prep.read_from_file(fname)
 	denoised_data = prep.denoise(data)
 
+	x = denoised_data.values.reshape(1,-1)
+	x = x[0]
+	y = denoised_data.values
+
+	print(x)
+	print(y)
+
+
+	inputs = []
+	outputs = []
+	z = 0
+	h = 0
+	for i in denoised_data.index:
+		j = []
+		j.append(z)
+		inputs.append(j)
+		#outputs.append(float(denoised_data['18.6'][i]))
+		z += 1
+	"""
 	#Write to intermediary training file
 	prep.write_to_file("data_denoised.csv", denoised_data)
 
 	#Transform Time Series data to Data base
 	inputs, outputs = [], []
-
+	
 	#TODO
 	db = prep.ts2db("data_denoised.csv", 50, 25, 25, inputs, outputs, "outputs.csv")
 
@@ -52,11 +72,14 @@ def main():
 
 	print(train_data)
 	print(db)
-
+	"""
 	mlp = mp.mlp_model()
-	mlp.fit(train_data, db)
-	forecast = mlp.forecast(train_data)
+	mlp.fit(y, x)
+	forecast = mlp.forecast([[18.6], [2], [3], [4]])
 	print(forecast)
+
+	#forecast = mlp.forecast(train_data)
+	#print(forecast)
 
 	"""
 	data_op = prep.read_from_file(fname)
