@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import math
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.neural_network import MLPClassifier
 from sklearn.neural_network import MLPRegressor
 from sklearn.datasets import make_classification
@@ -29,6 +30,7 @@ class mlp_model():
         :param output_dimension: ?
         :param layers: The ith element represents the number of neronds in the ith hidden layer
         """
+        #self.model = MLPClassifier(hidden_layer_sizes=layers, max_iter=300, )
         self.model = MLPRegressor(hidden_layer_sizes=layers, max_iter=300, )
         self.input_d = input_dimension
         self.output_d = output_dimension
@@ -74,7 +76,8 @@ class rf_model():
         """
         Initalizes a Random Forest Model with SKLearn's default params
         """
-        self.model = RandomForestClassifier()
+        self.model = RandomForestRegressor()
+        #self.model = RandomForestClassifier()
 
     def fit(self, x_train, y_train):
         """

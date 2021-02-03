@@ -18,6 +18,7 @@ import os
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
 
 """
 @EVERYONE DELETE/IMPLEMENT CODE AS NEEDED
@@ -27,8 +28,8 @@ def main():
 
 	#Get File Path
 	current_path = os.path.dirname(os.getcwd())
-	fname = current_path + "/TestData/4_irradiance_train.csv"
-	fname_test = current_path + "/TestData/4_irradiance_test.csv"
+	fname = current_path + "/TestData/1_temperature_train.csv"
+	fname_test = current_path + "/TestData/1_temperature_test.csv"
 
 	#Read and Preprocess Data from File
 	test = prep.read_from_file(fname_test)
@@ -40,8 +41,10 @@ def main():
 	ts, inputs, prev_i = prep.design_matrix(denoised_data, 0)
 	ts_test, inputs_test, ignore = prep.design_matrix(denoised_test, prev_i + 1)
 
+
 	#Create and Train Model
-	mlp = mp.mlp_model()
+
+	mlp = mp.rf_model()
 	mlp.fit(inputs, ts)
 	forecast = mlp.forecast(inputs_test)
 	print(ts[0:100])

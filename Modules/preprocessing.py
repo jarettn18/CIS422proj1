@@ -63,6 +63,7 @@ def impute_missing_data(time_series):
     restored_series = time_series.copy()
     data_col = time_series.columns[len(restored_series.columns) - 1]
     restored_series[data_col].replace(0, restored_series[data_col].mean().round(5), inplace=True)
+    #restored_series[data_col].replace(0, np.nan, inplace=True)
     # find NaN and fill with data to the right of it
     restored_series = restored_series.fillna(method='ffill')
     return restored_series
