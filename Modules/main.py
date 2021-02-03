@@ -37,14 +37,16 @@ def main():
 	data = prep.read_from_file(fname)
 	denoised_data = prep.denoise(data)
 
-	ts, inputs = prep.design_matrix(denoised_data)
-	ts_test, inputs_test = prep.design_matrix(denoised_test)
+	ts, inputs, prev_i = prep.design_matrix(denoised_data, 0)
+	ts_test, inputs_test, ignore = prep.design_matrix(denoised_test, prev_i + 1)
 
+	#Create and Train Model
 	mlp = mp.mlp_model()
 	mlp.fit(inputs, ts)
 	forecast = mlp.forecast(inputs_test)
 	print(ts[0:100])
 	print(forecast[0:100])
+	print(ts_test[0:100])
 
 
 
