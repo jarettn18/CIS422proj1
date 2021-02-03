@@ -11,17 +11,10 @@ Node Class and node implementation
 # ------- Begin Node Classes --------------
 
 """
-Notes from ZP on 2/1/2021
-- We may want to also be passing the list of children (represented by their
-operators) to the super() calls and the init signatures of the child classes
-- I did not yet have time to check to make sure all the attributes set in each
-init function is complete
+Notes from ZP on 2/2/2021
+
 - There are a handful of standalone functions that should probably be in the
 tree file
-- Should create 5 lists or a dict of lists containing valid ops for each node
-class
-
-- My edits for now are merely trying to represent the inheritance I had in mind
 """
 
 # Represents a node of an n-ary tree using a node Class
@@ -31,16 +24,18 @@ class Node:
         self.op = op
         self.parent_op = parent_op
         self.children = []         # Filled in during execution
-        self.parent_list = []   # Filled in during execution
+
+        # Filled in when added? May run into problems when edits are made
+        self.parent_list = []
 
     def execute():
         pass
 
 class prepNode(Node):
 
-    def __init__(self, op, parent_op, ts, starting_date, final_date, increment):
-        super().__init__(op, parent_op)
-        self.ts = ts
+    def __init__(self, op, starting_date, final_date, increment):
+        super().__init__(op, None)
+        self.ts = None    # Filled in during execution
 
         # Optional depending on op value
         self.starting_date = starting_date
@@ -55,8 +50,8 @@ class prepNode(Node):
 
 class modelNode(Node):
 
-    def __init__(self, op, parent_op, x_train, y_train, input_dimension, output_dimension, hidden_layers):
-        super().__init__(op, parent_op)
+    def __init__(self, op, x_train, y_train, input_dimension, output_dimension, hidden_layers):
+        super().__init__(op, None)
         self.x_train = x_train
         self.y_train = y_train
         self.input_dimension = input_dimension
@@ -71,12 +66,10 @@ class modelNode(Node):
 
 class splitNode(Node):
 
-    def __init__(self, op, parent_op, ts, perc_train, prec_valid, perc_test, output_file):
-        super().__init__(op, parent_op)
-        self.ts = ts
-        self.perc_train = perc_train
-        self.prec_valid = prec_valid
-        #Incomplete
+    def __init__(self, op, prev_index):
+        super().__init__(op, None)
+        self.ts = None  # Filled in during execution
+        self.prev_index = prev_index
 
     def execute():
         pass
@@ -87,9 +80,9 @@ class splitNode(Node):
 
 class visualizeNode(Node):
 
-    def __init__(self, op, parent_op, ts):
-        super().__init__(op, parent_op)
-        self.ts = ts
+    def __init__(self, op):
+        super().__init__(op, None)
+        self.ts = None
 
     def execute():
         pass
@@ -99,11 +92,10 @@ class visualizeNode(Node):
 
 class evalNode(Node):
 
-    def __init__(self, op, parent_op, y_test, y_forecast):
-        super().__init__(op, parent_op)
-        self.y_test = y_test
-        self.y_forecast = y_forecast
-
+    def __init__(self, op):
+        super().__init__(op, None)
+        self.y_test = None
+        self.y_forecast = None
 
     def execute():
         pass

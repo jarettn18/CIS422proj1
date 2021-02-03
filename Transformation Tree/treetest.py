@@ -9,7 +9,9 @@ Testing of tree.py and node.py
 """
 
 
-import tree as tree1
+from tree import Tree
+
+"""
 import node as nodefile
 from node import Node
 from node import prepNode
@@ -17,9 +19,26 @@ from node import splitNode
 from node import modelNode
 from node import visualizeNode
 from node import evalNode
+"""
+
+def main():
+    tree_test = Tree()
+
+    tree_test.add_prep_node([], "denoise", None, None, None)
+    tree_test.add_prep_node(["denoise"], "impute_outliers", None, None, None)
+    tree_test.add_prep_node(["denoise"], "impute_missing_data", None, None, None)
+
+    # Silly printed checks since I haven't converted Callista's print function
+    # to the new tree
+    print(tree_test.root.op)
+    print(tree_test.root.children[0].op)
+    print(tree_test.root.children[1].parent_op)
+
 
 if __name__ == '__main__':
+    main()
 
+    """
     root = nodefile.add_root("read_from_file")
     #root = Node("root")
 
@@ -53,3 +72,4 @@ if __name__ == '__main__':
     #print_path(root, mlp)
 
     test_print2 = tree1.printNode(root)
+    """

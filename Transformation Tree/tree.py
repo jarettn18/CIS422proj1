@@ -3,7 +3,7 @@ File: tree.py
 Class: CIS 422
 Date: January 20, 2021
 Team: The Nerd Herd
-Head Programmer: Callista West
+Head Programmers: Callista West, Zeke Petersen
 Version 0.1.0
 
 Basic Tree implementation
@@ -16,6 +16,151 @@ from node import splitNode
 from node import modelNode
 from node import visualizeNode
 from node import evalNode
+
+"""
+Zeke's note on 2/2
+Draft of nodes and classes ready- still TODO:
+
+- Checks of the parent node and child node operators
+so the node class ordering is proper
+
+- Make sure that when nodes are created, all the arguments that are set
+by the Data Scientist are passed as arguments in the add_node functions
+(that is, start/end dates in a prep node with a clip operator, NOT TS arrays of
+real data generated once the infile is passed to the tree during execution, for
+example)
+
+- Fill rest of OPS dictionary
+
+- Finish function commenting
+"""
+
+
+# Non-exhaustive yet
+OPS = {"preps": ["denoise", "impute_missing_data", "impute_outliers",
+            "longest_continuous_run"],
+       "splits": ["design_matrix"],
+       "models": ["mlp", "rf"],
+       "evals": ["mse", "smape", "mape"],
+       "visualizes":["box_plot", "histogram"]}
+
+class Tree:
+    def __init__(self):
+        self.infile = None    # Filled in at execute stage
+        self.root = None  # Filled in as a prep node?
+
+    # helper function
+    def _find_node(self, op_list):
+        """
+		Starting from the root, trace node path by their op value in order
+		Returns an existing Node with the last op in the list (may be any of the 5)
+		Returns None if node path is invalid or node doesn’t exist
+        """
+
+        if self.root is None:
+            print("Tree empty")
+            return None
+
+        l = len(op_list)
+
+        if l == 0:
+            print("No node specified")
+            return None
+
+        else:
+            curr_node = self.root
+
+            # Check that first op is OK
+            if op_list[0] != curr_node.op:
+                print("Invalid node path")
+                return None
+
+            # go through each string of the op_list
+            for i in range(l - 1):
+                # Go through the children list
+                found = 0
+                for j in range(len(curr_node.children)):
+                    # Does a child match the next op?
+                    if curr_node.children[j].op == op_list[i + 1]:
+                        curr_node = curr_node.children[j]
+                        found = 1
+                        break
+                if found == 0:
+                    print("Invalid node path")
+                    return None
+            # Last node was legal
+            return curr_node
+
+    def _add_node(self, op_list, node):
+
+        # If the tree is empty, we just add the node to the root
+        if self.root is None:
+            self.root = node
+        else:
+            # Fill in some of the node data
+            found_node = self._find_node(op_list)
+            if found_node is not None:
+                node.parent_list = op_list
+                node.parent_op = op_list[-1]
+                found_node.children.append(node)
+            else:
+                raise Exception("Unable to add node")
+
+
+    def _print_tree(self):
+        pass
+
+    def add_prep_node(self, op_list, op, starting_date, final_date, increment):
+
+        if op not in OPS["preps"]:
+            raise Exception("Invalid prep operator")
+
+        new_node = prepNode(op, starting_date, final_date, increment)
+
+        self._add_node(op_list, new_node)
+
+    # Unclear if prev_index will also need to be passed here or if it will be
+    # Filled in during execution
+    def add_split_node(self, op_list, op, prev_index):
+
+        if op not in OPS["splits"]:
+            raise Exception("Invalid split operator")
+
+        new_node = splitNode(op, prev_index)
+
+        self._add_node(op_list, new_node)
+
+    def add_model_node(self, op_list, op, x_train, y_train,
+                            input_dimension, output_dimension, hidden_layers):
+        if op not in OPS["models"]:
+            raise Exception("Invalid model operator")
+
+        new_node = modelNode(op, None, None, None, None, None)
+
+        self._add_node(op_list, new_node)
+
+    def add_eval_node(self, op_list):
+        if op not in OPS["evals"]:
+            raise Exception("Invalid eval operator")
+
+        new_node = evalNode(op)
+
+        self._add_node(op_list, new_node)
+
+    def add_visualize_node(self, op_list):
+        if op not in OPS["visualizes"]:
+            raise Exception("Invalid visualize operator")
+
+        new_node = visualizeNode(op)
+
+        self._add_node(op_list, new_node)
+
+    def execute_tree(infile):
+        pass
+
+
+# END TREE DEFINITION --------------------------
+
 
 def replicate_subtree(self, root_node):
     """
@@ -52,6 +197,7 @@ def add_subtree(self, tree_root, new_node):
     return None
 
 def save_tree(root):
+    pass
     """
     Tree starting at specified root will be create and saved to a CSV? file
     :param root: the root of the tree the user is wanting saved
@@ -59,6 +205,7 @@ def save_tree(root):
     """
 
 def save_pipeline(root, end):
+    pass
     """
     Takes a pipeline from a given root and a given end and saves/stores the
         pipeline
@@ -112,6 +259,8 @@ def print_path(root, ending):
 
 """
 
+
+
 def printNode(root):
     # if there is no root, return none
     if root is None:
@@ -147,7 +296,3 @@ def printNode(root):
         print("---------------") # extra space in between levels
 
     print(".................end of tree...............\n")
-		
-
-
-
