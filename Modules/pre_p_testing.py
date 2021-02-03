@@ -3,9 +3,10 @@ import preprocessing as prep
 if __name__ == '__main__':
     tmp = 0
     data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/missing_data_test.csv"
-    data_op = prep.read_from_file(data)
+    training = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/missing_data_test.csv"
+    data_op = prep.read_from_file(training)
     print(data_op)
-    dataaa = prep.longest_continuous_run(data_op)
+    dataaa = prep.impute_missing_data(data_op)
     prep.write_to_file("da.csv", dataaa)
     # log = prep.cubic_roots(data_op)
     # prep.write_to_file("cubed.csv", log)
