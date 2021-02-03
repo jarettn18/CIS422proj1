@@ -18,6 +18,8 @@ operators) to the super() calls and the init signatures of the child classes
 init function is complete
 - There are a handful of standalone functions that should probably be in the
 tree file
+- Should create 5 lists or a dict of lists containing valid ops for each node
+class
 
 - My edits for now are merely trying to represent the inheritance I had in mind
 """
@@ -28,8 +30,8 @@ class Node:
     def __init__(self, op, parent_op):
         self.op = op
         self.parent_op = parent_op
-        self.child = []
-        self.folder = []    # May remove in favor of global tables of function names for each class
+        self.children = []         # Filled in during execution
+        self.parent_list = []   # Filled in during execution
 
     def execute():
         pass
@@ -39,6 +41,8 @@ class prepNode(Node):
     def __init__(self, op, parent_op, ts, starting_date, final_date, increment):
         super().__init__(op, parent_op)
         self.ts = ts
+
+        # Optional depending on op value
         self.starting_date = starting_date
         self.final_date = final_date
         self.increment = increment
@@ -121,7 +125,7 @@ def add_node(self, parent, kid):
     : returns None
     """
     if parent is not None:
-        parent.child.append(Node(kid))
+        parent.children.append(Node(kid))
     else:
         print("Cannot add a child node to a parent that doesn't exist")
         return None
@@ -149,12 +153,14 @@ def replace(self, old, new):
                operator
     : return: returns None
     """
+    pass
+    """
     #still need to check that old and new nodes are in same "category"
     if old is not None:
         self.folder.append(new)
         self.folder.remove(old)
         return None
-
+    """
 # Prints the n-ary tree level wise
 """
 def find_function(operation):
