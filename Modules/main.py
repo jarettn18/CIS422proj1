@@ -47,7 +47,6 @@ def main():
 	print(forecast[0:100])
 
 
-	
 
 if __name__ == '__main__':
 	main()

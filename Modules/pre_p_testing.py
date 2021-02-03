@@ -2,11 +2,12 @@ import preprocessing as prep
 
 if __name__ == '__main__':
     tmp = 0
-    data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/WindSpeed2010Jan20mMin.csv"
+    data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/missing_data_test.csv"
     data_op = prep.read_from_file(data)
-    log = prep.cubic_roots(data_op)
-    prep.write_to_file("cubed.csv", log)
-    prep.write_to_file("logged.csv", prep.logarithm(data_op))
+    dataaa = prep.denoise(data_op)
+    # log = prep.cubic_roots(data_op)
+    # prep.write_to_file("cubed.csv", log)
+    # prep.write_to_file("logged.csv", prep.logarithm(data_op))
     # prep.split_data(data_op, 50, 25, 25)
     # cleaned = prep.denoise(data_op)
     # clip = prep.clip(data_op, "1/1/2010", "1/5/2010")
@@ -30,10 +31,10 @@ if __name__ == '__main__':
     # data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/1_temperature_train.csv"
     # data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/FRB_H15 NonFinancial.csv"
     # TS2DB
-    inputs = []
-    outputs = []
-    da = prep.ts2db(data, 50, 25, 25, inputs, outputs, "data_op.csv")
-    print(da)# works
+    # inputs = []
+    # outputs = []
+    # da = prep.ts2db(data, 50, 25, 25, inputs, outputs, "data_op.csv")
+    # print(da)# works
     # ----------------
     # inputs from left to right(up to down) array is of t-x
     # t being time now. i.e input_index[0] = t - 0 = t  , input_index[1]  = t + (-x) = t-x

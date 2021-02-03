@@ -10,9 +10,12 @@ Overview: Preprocessing functions to be used with Time Series Data.
 """
 import pandas as pd
 from math import pow, log10
+import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import datetime as dt
-import janitor as pyj
+
+
+# import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -58,6 +61,7 @@ def impute_missing_data(time_series):
     """
     # Possibly use .shape - Return a tuple representing the dimensionality of the DataFrame.
     restored_series = time_series.copy()
+    restored_series.replace(0, np.nan, inplace=True)
     # find NaN and fill with data to the right of it
     restored_series = restored_series.fillna(method='ffill')
     return restored_series
@@ -140,9 +144,9 @@ def clip(time_series, starting_date, final_date) -> object:
     dates = time_series.columns[0]
     clipped = time_series.copy()
     # call filter_date function to get dates/values
-    filtered = clipped.filter_date(dates, starting_date, final_date)
+    # filtered = clipped.filter_date(dates, starting_date, final_date)
     # return time frame
-    return filtered
+    # return filtered
 
 
 def assign_time(time_series, start, increment):
@@ -314,7 +318,7 @@ def split_data(time_series, perc_training, perc_valid, perc_test):
               + "must be equal")
 
 
-def design_matrix(time_series,):
+def design_matrix(time_series, ):
     """
     Creates a matrix of time series data
     while adding to input/output index
@@ -332,7 +336,7 @@ def design_matrix(time_series,):
     data_col = tmp_ts.columns[len(tmp_ts.columns) - 1]
     # t = len(tmp_ts)'
     for i in range(len(tmp_ts.values)):
-	    inputs.append([i])
+        inputs.append([i])
     # remove time column - not necessary
     # axis=1 specifies Columns
     if columns == 2:
