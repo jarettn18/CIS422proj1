@@ -4,7 +4,9 @@ if __name__ == '__main__':
     tmp = 0
     data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/missing_data_test.csv"
     data_op = prep.read_from_file(data)
-    dataaa = prep.denoise(data_op)
+    print(data_op)
+    dataaa = prep.longest_continuous_run(data_op)
+    prep.write_to_file("da.csv", dataaa)
     # log = prep.cubic_roots(data_op)
     # prep.write_to_file("cubed.csv", log)
     # prep.write_to_file("logged.csv", prep.logarithm(data_op))

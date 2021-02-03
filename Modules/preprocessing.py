@@ -104,8 +104,10 @@ def longest_continuous_run(time_series):
     # DISCLAIMER: Code lines 92-101 Referenced from
     # https://stackoverflow.com/questions/41494444/pandas-find-longest-stretch-without-nan-values
     # get data values and store as array
-    data_col = time_series.columns[len(time_series.columns) - 1]
-    lr_index = time_series.index[pd.isna(time_series[data_col])].tolist()
+    longest = time_series.copy()
+    data_col = longest.columns[len(longest.columns) - 1]
+    longest[data_col].replace(0, np.nan, inplace=True)
+    lr_index = longest.index[pd.isna(longest[data_col])].tolist()
     # find difference between index of TS
     # if lr_index is empty then there are no NaN's
     if len(lr_index) > 0:
@@ -116,17 +118,17 @@ def longest_continuous_run(time_series):
         #    # loop through array getting difference of consecutive values
         for idx in range(0, len(lr_index)):
             if idx == (len(lr_index) - 1):
-                if len(time_series.index) - lr_index[idx] > diff:
-                    diff = len(time_series.index) - lr_index[idx]
+                if len(longest.index) - lr_index[idx] > diff:
+                    diff = len(longest.index) - lr_index[idx]
                     first_idx = lr_index[idx] + 1
-                    last_idx = (len(time_series) - 1)
+                    last_idx = (len(longest) - 1)
             elif lr_index[idx + 1] - lr_index[idx] > diff:
                 diff = lr_index[idx + 1] - lr_index[idx]
                 first_idx = lr_index[idx]
                 last_idx = lr_index[idx + 1]
         # get start/stop times from TS at indexed locations
         # create new DataFrame of sliced portion
-        clipped_data = time_series.loc[first_idx:last_idx]
+        clipped_data = longest.loc[first_idx:last_idx]
         return clipped_data
     return time_series
 
