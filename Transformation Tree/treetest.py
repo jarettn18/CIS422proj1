@@ -3,36 +3,46 @@ File: treetest.py
 Class: CIS 422
 Date: January 23, 2020
 Team: The Nerd Herd
-Head Programmer: Callista West
-Version 0.1.0
+Head Programmers: Callista West, Zeke Petersen
+Version 0.1.1
 Testing of tree.py and node.py
 """
 
-
 from tree import Tree
+import tree
 
-"""
-import node as nodefile
-from node import Node
-from node import prepNode
-from node import splitNode
-from node import modelNode
-from node import visualizeNode
-from node import evalNode
-"""
-
-def main():
+def test_basics():
+    print("Begin test_basics\n")
     tree_test = Tree()
 
     tree_test.add_prep_node([], "denoise", None, None, None)
     tree_test.add_prep_node(["denoise"], "impute_outliers", None, None, None)
     tree_test.add_prep_node(["denoise"], "impute_missing_data", None, None, None)
+    assert tree_test.root.op == "denoise"
+    assert tree_test.root.children[0].op == "impute_outliers"
+    assert tree_test.root.children[1].parent_op == "denoise"
+    assert tree_test.root.children[0].parent_list == ["denoise"]
 
-    # Silly printed checks since I haven't converted Callista's print function
-    # to the new tree
-    print(tree_test.root.op)
-    print(tree_test.root.children[0].op)
-    print(tree_test.root.children[1].parent_op)
+def test_all_node_types():
+    print("Begin test_all_node_types\n")
+    tree_test = Tree()
+
+    tree_test.add_prep_node([], "denoise", None, None, None)
+    tree_test.add_split_node(["denoise"], "design_matrix", 0)
+    tree_test.add_visualize_node(["denoise"], "box_plot")
+    tree_test.add_model_node(["denoise", "design_matrix"], "rf", 1, 2, 100)
+    tree_test.add_eval_node(["denoise", "design_matrix", "rf"], "MSE")
+    assert tree_test.root.op == "denoise"
+    assert tree_test.root.children[0].op == "design_matrix"
+    assert tree_test.root.children[1].op == "box_plot"
+    assert tree_test.root.children[0].children[0].op == "rf"
+    assert tree_test.root.children[0].children[0].children[0].op == "MSE"
+
+def main():
+    print("----------- Begin testing ------------\n")
+    test_basics()
+    test_all_node_types()
+    print("---------- All tests passed ----------\n")
 
 
 if __name__ == '__main__':
