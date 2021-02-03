@@ -1,6 +1,7 @@
 ## Meetings
 -----------
 Tracking for meeting date, time, duration, and content.
+Maintained by Zeke Petersen
 
 ### 1/13/2021 - Initial Team Meeting
 ------------------------------------
@@ -68,3 +69,14 @@ Tracking for meeting date, time, duration, and content.
 * Discussed how the design_matrix and ts2db functions work
 * Discussed arguments for the mlp and rf models
 * Learned that the presentation in 1 week will be a demonstration of a working or mostly working project.
+
+### 2/1/2021 - Team meeting
+---------------------------
+5:30pm-6:00pm (all members present)
+* Jarett and Logan will continue trying to get a pipeline sans-tree working
+(essentially trying to get semi accurate output models)
+* Zeke will write out the node.py classes, the tree class, and the add_node functions
+* Once done, Zeke will pass off the responsibility to Jack to work on the execute
+function, which will likely draw heavily from Jarett and Logan's work
+* Callista will work on the saving and loading functions once Zeke has a working tree
+creation script
