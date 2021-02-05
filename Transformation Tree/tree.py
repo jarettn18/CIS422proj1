@@ -17,54 +17,41 @@ from node import modelNode
 from node import visualizeNode
 from node import evalNode
 
-"""
-Zeke's note on 2/2
-Draft of nodes and classes ready- still TODO:
-
-- Checks of the parent node and child node operators
-so the node class ordering is proper
-
-- Make sure that when nodes are created, all the arguments that are set
-by the Data Scientist are passed as arguments in the add_node functions
-(that is, start/end dates in a prep node with a clip operator, NOT TS arrays of
-real data generated once the infile is passed to the tree during execution, for
-example)
-
-- Fill rest of OPS dictionary
-
-- Finish function commenting
-"""
-
-
-# Non-exhaustive yet
-OPS = {"preps": ["denoise", "impute_missing_data", "impute_outliers",
-            "longest_continuous_run"],
+# Splits section likely to change later
+OPS = {
+       "preps": ["denoise", "impute_missing_data", "impute_outliers",
+            "longest_continuous_run", "clip", "assign_time", "difference",
+            "scaling", "standardize", "logarithm", "cubic_roots"],
        "splits": ["design_matrix"],
        "models": ["mlp", "rf"],
-       "evals": ["mse", "smape", "mape"],
-       "visualizes":["box_plot", "histogram"]}
+       "evals": ["MSE", "RMSE", "MAPE", "sMAPE"],
+       "visualizes":["plot", "histogram", "summary", "box_plot", "shapiro_wilk",
+            "d_agostino", "anderson_darling", "qq_plot"]
+      }
 
 class Tree:
     def __init__(self):
         self.infile = None    # Filled in at execute stage
-        self.root = None  # Filled in as a prep node?
+        self.root = None      # Eventually will be a node object
 
     # helper function
     def _find_node(self, op_list):
         """
-		Starting from the root, trace node path by their op value in order
-		Returns an existing Node with the last op in the list (may be any of the 5)
-		Returns None if node path is invalid or node doesn’t exist
+        :op_list: list of function operator strings, represent real functions
+
+		Starting from the root, trace node path by their op value in order.
+		Returns an existing Node with the last op in the list (may be any of the 5).
+		Returns None if node path is invalid or node doesn’t exist.
         """
 
         if self.root is None:
-            print("Tree empty")
+            print("Tree empty\n")
             return None
 
         l = len(op_list)
 
         if l == 0:
-            print("No node specified")
+            print("No node specified\n")
             return None
 
         else:
@@ -72,7 +59,7 @@ class Tree:
 
             # Check that first op is OK
             if op_list[0] != curr_node.op:
-                print("Invalid node path")
+                print("Invalid node path\n")
                 return None
 
             # go through each string of the op_list
@@ -86,12 +73,25 @@ class Tree:
                         found = 1
                         break
                 if found == 0:
-                    print("Invalid node path")
+                    print("Invalid node path\n")
                     return None
             # Last node was legal
             return curr_node
 
+    # Any node type can be the root for later purposes of adding subtrees
+    # Ignores the op_list in this case
     def _add_node(self, op_list, node):
+        """
+        :op_list: list of function operator strings, represent real functions
+        :node: Node class object, will be any of the 5 subclasses
+
+		If the root is None, sets the node passed as the root, regardless of the
+        op_list.
+        If the root is not None and the op_list represents a valid path, will
+        return the Node containing the last operator of the op_list.
+        If the root is not None and the op_list does not represent a valid path,
+        will raise an Exception.
+        """
 
         # If the tree is empty, we just add the node to the root
         if self.root is None:
@@ -104,63 +104,130 @@ class Tree:
                 node.parent_op = op_list[-1]
                 found_node.children.append(node)
             else:
-                raise Exception("Unable to add node")
+                raise Exception("Unable to add node\n")
 
 
     def _print_tree(self):
         pass
 
     def add_prep_node(self, op_list, op, starting_date, final_date, increment):
+        """
+        For arguments, see the prepNode class __init__
+
+        Adds a new prepNode to the node specified by the op_list. Raises an
+        exception if not valid or not possible.
+        """
 
         if op not in OPS["preps"]:
-            raise Exception("Invalid prep operator")
+            raise Exception("Invalid prep operator\n")
+
+        # Can only add prep node after another prep node
+        if len(op_list) != 0:
+            if op_list[-1] not in OPS["preps"]:
+                raise Exception("Illegally adding prep node after wrong node type\n")
 
         new_node = prepNode(op, starting_date, final_date, increment)
 
         self._add_node(op_list, new_node)
 
-    # Unclear if prev_index will also need to be passed here or if it will be
-    # Filled in during execution
     def add_split_node(self, op_list, op, prev_index):
+        """
+        For arguments, see the splitNode class __init__
+
+        Adds a new splitNode to the node specified by the op_list. Raises an
+        exception if not valid or not possible.
+        """
 
         if op not in OPS["splits"]:
-            raise Exception("Invalid split operator")
+            raise Exception("Invalid split operator\n")
+
+        # Can only add a split node after a prep node
+        if len(op_list) != 0:
+            if op_list[-1] not in OPS["preps"]:
+                raise Exception("Illegally adding split node after wrong node type\n")
 
         new_node = splitNode(op, prev_index)
 
         self._add_node(op_list, new_node)
 
-    def add_model_node(self, op_list, op, x_train, y_train,
-                            input_dimension, output_dimension, hidden_layers):
-        if op not in OPS["models"]:
-            raise Exception("Invalid model operator")
+    def add_model_node(self, op_list, op, input_dimension, output_dimension,
+                                    hidden_layers):
+        """
+        For arguments, see the modelNode class __init__
 
-        new_node = modelNode(op, None, None, None, None, None)
+        Adds a new modelNode to the node specified by the op_list. Raises an
+        exception if not valid or not possible.
+        """
+
+        if op not in OPS["models"]:
+            raise Exception("Invalid model operator\n")
+
+        # Can only add a model node after a split node
+        if len(op_list) != 0:
+            if op_list[-1] not in OPS["splits"]:
+                raise Exception("Illegally adding model node after wrong node type\n")
+
+        new_node = modelNode(op, None, None, None)
 
         self._add_node(op_list, new_node)
 
-    def add_eval_node(self, op_list):
+    def add_eval_node(self, op_list, op):
+        """
+        For arguments, see the evalNode class __init__
+
+        Adds a new evalNode to the node specified by the op_list. Raises an
+        exception if not valid or not possible.
+        """
+
         if op not in OPS["evals"]:
-            raise Exception("Invalid eval operator")
+            raise Exception("Invalid eval operator\n")
+
+        # Can only add an eval node after a model node
+        if len(op_list) != 0:
+            if op_list[-1] not in OPS["models"]:
+                raise Exception("Illegally adding eval node after wrong node type\n")
 
         new_node = evalNode(op)
 
         self._add_node(op_list, new_node)
 
-    def add_visualize_node(self, op_list):
+    def add_visualize_node(self, op_list, op):
+        """
+        For arguments, see the visualizeNode class __init__
+
+        Adds a new visualizeNode to the node specified by the op_list. Raises an
+        exception if not valid or not possible.
+        """
+
         if op not in OPS["visualizes"]:
-            raise Exception("Invalid visualize operator")
+            raise Exception("Invalid visualize operator\n")
+
+        # Can only add a visualize node after a prep node
+        if len(op_list) != 0:
+            if op_list[-1] not in OPS["preps"]:
+                raise Exception("Illegally adding visualize node after wrong node type\n")
 
         new_node = visualizeNode(op)
 
         self._add_node(op_list, new_node)
 
+    """
+    Can assume the tree has valid node ordering, though will need to check
+    to ensure the root is a prep (or I suppose a split, if we feed raw data)
+
+    prep -> split -> model -> eval
+        \-> visualize
+
+    Can implement the execute functions of each class to simplify this function
+    """
     def execute_tree(infile):
         pass
 
 
 # END TREE DEFINITION --------------------------
 
+# Below here are functions that may need to be modified and moved
+# to the Tree class
 
 def replicate_subtree(self, root_node):
     """

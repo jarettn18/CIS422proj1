@@ -3,8 +3,8 @@ File: node.py
 Class: CIS 422
 Date: January 30, 2021
 Team: The Nerd Herd
-Head Programmer: Callista West
-Version 0.1.0
+Head Programmers: Callista West, Zeke Petersen
+Version 0.1.1
 Node Class and node implementation
 """
 
@@ -45,15 +45,15 @@ class prepNode(Node):
     def execute():
         pass
         """
-        Use this function when the tree executes
+        This function will help execute the tree
         """
 
 class modelNode(Node):
 
-    def __init__(self, op, x_train, y_train, input_dimension, output_dimension, hidden_layers):
+    def __init__(self, op, input_dimension, output_dimension, hidden_layers):
         super().__init__(op, None)
-        self.x_train = x_train
-        self.y_train = y_train
+        self.x_train = None
+        self.y_train = None
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
         self.hidden_layers = hidden_layers
@@ -61,7 +61,7 @@ class modelNode(Node):
     def execute():
         pass
     """
-    Function will execute the tree
+    This function will help execute the tree
     """
 
 class splitNode(Node):
@@ -74,7 +74,7 @@ class splitNode(Node):
     def execute():
         pass
     """
-    Function will execute the tree
+    This function will help execute the tree
     """
 
 
@@ -87,7 +87,7 @@ class visualizeNode(Node):
     def execute():
         pass
     """
-    Function will execute the tree using the DataFram object ts
+    This function will help execute the tree
     """
 
 class evalNode(Node):
@@ -100,7 +100,7 @@ class evalNode(Node):
     def execute():
         pass
     """
-    This function will execute the tree
+    This function will help execute the tree
     """
 
 # ------- End Node Classes --------------

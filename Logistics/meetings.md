@@ -3,7 +3,7 @@
 Tracking for meeting date, time, duration, and content.
 Maintained by Zeke Petersen
 
-### 1/13/2021 - Initial Team Meeting
+### 1/13/2021 - Initial team meeting
 ------------------------------------
 6:00pm-6:20pm (all members present)
 * Divided up the project into two phases:
@@ -17,13 +17,13 @@ Maintained by Zeke Petersen
   * Zeke - Team Leader
 * Goal before first meeting with client (scheduled early on 1/19 at 12pm) will be to become familiar with assigned module and identify clarifying questions
 
-### 1/19/2021 - Mini Team Meeting
+### 1/19/2021 - Mini team meeting
 ---------------------------------
 12:00pm-12:20pm (all members present)
 * Established Thursdays at 6:00pm as weekly checkin meetings
 * Clarified that Callista will begin creating the n-ary tree
 
-### 1/20/2021 - First Meeting with Client
+### 1/20/2021 - First meeting with client
 -----------------------------------------
 6:00pm-6:15pm (all members present)
 * Clarified questions about the project-- important takeaways included:
@@ -32,7 +32,7 @@ Maintained by Zeke Petersen
     * "Backtracking" is not precisely what was meant-- that was more of another way to say tree manipulations.
     * Preprocessing will take some reasonable judgement calls, for example, when missing data can be imputed or not or how to add timestamps to begin with.
 
-### 1/21/2021 - First Mandatory Meeting
+### 1/21/2021 - First mandatory meeting
 ---------------------------------------
 10:30am-10:50am (Zeke, Logan, Callista)
 * Presented documents that we have now
@@ -41,7 +41,7 @@ Maintained by Zeke Petersen
 * Clarified that we can and likely should be wrapping the pandas functions that are the same as the project specified functions
 * The feedback is concern over how little code has been written thus far, however, since we have plans for self-imposed deadlines, it may be nothing to worry about
 
-### 1/21/2021 - Weekly Team Meeting
+### 1/21/2021 - Weekly team meeting
 -----------------------------------
 6:00pm-6:30pm (all members present)
 * Established next Thursday (1/28) as the deadline for finalizing the modules and basic tree operations
@@ -80,3 +80,27 @@ Maintained by Zeke Petersen
 function, which will likely draw heavily from Jarett and Logan's work
 * Callista will work on the saving and loading functions once Zeke has a working tree
 creation script
+
+### 2/4/2021 - Second mandatory meeting
+---------------------------
+10:30am-10:50am (all memebers present)
+* Went over current progress with Juan (most of the non-tree code is working,
+we have plans for dividing up the tree code we have left)
+* Clarified that accuracy of our models is not important, so Jarett and Logan
+can redirect their efforts
+* Juan suggested that Callista use pickles for saving Python objects
+* Discussed that we should briefly discuss how the system works, but focus tomorrow's
+presentation efforts on team organization and a demo.
+
+### 2/4/2021 - Weekly team meeting
+---------------------------
+6:00pm-6:15pm (Zeke, Jack, Logan, Callista)
+* (For tomorrow's presentation) Zeke and Logan have created a short presentation
+slideshow and will talk about team organization and system structure.
+Jarett will give a short demo showing what we have.
+* Jack will continue working on the execute functions (tree.py)
+* Callista will continue working on loading/saving with pickles (separate file for now)
+* Logan will start on tree replication (separate file for now)
+* Once the presentation is done, we will check in and get a time sharing system of
+sorts working for who can work on tree.py since most of the remaining code will be
+in that file. We will also assign out cleanup and the last function duties this weekend.
