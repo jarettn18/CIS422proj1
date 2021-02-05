@@ -5,11 +5,13 @@ Date: January 23, 2020
 Team: The Nerd Herd
 Head Programmers: Callista West, Zeke Petersen
 Version 0.1.1
-Testing of tree.py and node.py
+Testing of tree.py, node.py, and save_load.py
 """
 
 from tree import Tree
 import tree
+import save_load as SL
+from save_load import Save
 
 def test_basics():
     print("Begin test_basics\n")
@@ -37,6 +39,8 @@ def test_all_node_types():
     assert tree_test.root.children[1].op == "box_plot"
     assert tree_test.root.children[0].children[0].op == "rf"
     assert tree_test.root.children[0].children[0].children[0].op == "MSE"
+    tree_saving = Save.save_tree(tree_test, "testingtree")
+    tree_loading = Save.load_tree(tree_test, "testingtree")
 
 def main():
     print("----------- Begin testing ------------\n")
