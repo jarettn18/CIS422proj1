@@ -1,7 +1,13 @@
 ## Meetings
 -----------
 Tracking for meeting date, time, duration, and content.
-Maintained by Zeke Petersen
+
+Creation Date: January 15, 2021
+
+Team: The Nerd Herd
+
+Author: Zeke Petersen
+
 
 ### 1/13/2021 - Initial team meeting
 ------------------------------------
@@ -64,7 +70,7 @@ Maintained by Zeke Petersen
 
 ### 1/29/2021 - Meeting with client
 -----------------------------------
-2:00pm-2:20pm (all memebers present)
+2:00pm-2:20pm (all members present)
 * Clarified that we do not have to rigidly adhere to the given function signatures
 * Discussed how the design_matrix and ts2db functions work
 * Discussed arguments for the mlp and rf models
@@ -83,7 +89,7 @@ creation script
 
 ### 2/4/2021 - Second mandatory meeting
 ---------------------------
-10:30am-10:50am (all memebers present)
+10:30am-10:50am (all members present)
 * Went over current progress with Juan (most of the non-tree code is working,
 we have plans for dividing up the tree code we have left)
 * Clarified that accuracy of our models is not important, so Jarett and Logan

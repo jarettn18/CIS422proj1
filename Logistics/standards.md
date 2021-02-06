@@ -2,6 +2,12 @@
 -------------------
 The following information is intended to improve modularity and later integration. Documentation of code will be done by the software engineer who wrote it, but should be easily readable by other engineers. This information will be updated as time goes on.
 
+Creation Date: January 15, 2021
+
+Team: The Nerd Herd
+
+Author: Zeke Petersen
+
 
 ### Documentation/Organization
 -----------------------------
