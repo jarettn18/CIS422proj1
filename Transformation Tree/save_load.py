@@ -44,6 +44,8 @@ class Save:
           to a var.
         Function returns None
         """
-        pickle_in = open(file_name, "rb")
+        root = Path(".")
+        my_path = root / "pickle_objects" / file_name
+        pickle_in = open(my_path, "rb")
         tree = pickle.load(pickle_in)
         return None
