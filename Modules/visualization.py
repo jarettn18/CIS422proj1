@@ -136,7 +136,7 @@ def shapiro_wilk(series):
         print('Sample looks Gaussian (fail to reject H0)')
     else:
         print('Sample does not look Gaussian (reject H0)')
-    return stat, p;
+    return stat, p
 
 
 # In[293]:

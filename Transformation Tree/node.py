@@ -17,6 +17,14 @@ Notes from ZP on 2/2/2021
 tree file
 """
 
+import sys
+sys.path.append('../Modules')
+for p in sys.path:
+    print(p)
+import preprocessing as prep
+import visualization as viz
+import model as mod
+
 # Represents a node of an n-ary tree using a node Class
 class Node:
     # creating a new tree node
@@ -42,11 +50,34 @@ class prepNode(Node):
         self.final_date = final_date
         self.increment = increment
 
-    def execute():
-        pass
+    def execute(self):
+        # pass
         """
         This function will help execute the tree
         """
+        if self.op == "denoise":
+            self.ts = prep.denoise(self.ts)
+        elif self.op == "impute_missing_data":
+            prep.impute_missing_data(self.ts)
+        elif self.op == "impute_outliers":
+            prep.impute_outliers(self.ts)
+        elif self.op == "longest_continuous_run":
+            prep.longest_continuous_run(self.ts)      
+        elif self.op == "clip":
+            self.ts = pre.denoise(self.ts, self.starting_date, self.starting_date, self.final_date)
+        elif self.op == "assign_time":
+            prep.assign_time(self.ts, self.starting_date, self.increment)
+        elif self.op == "difference":
+            prep.difference(self.ts)
+        elif self.op == "scaling":
+            prep.scaling(self.ts)
+        elif self.op == "standardize":
+            prep.standardize(self.ts)
+        elif self.op == "logarithm":
+            prep.logarithm(self.ts)  
+        elif self.op == "cubic_roots":
+            prep.cubic_roots(self.ts)
+        return self.ts
 
 class modelNode(Node):
 
@@ -59,10 +90,11 @@ class modelNode(Node):
         self.hidden_layers = hidden_layers
 
     def execute():
-        pass
-    """
-    This function will help execute the tree
-    """
+        # pass
+        """
+        This function will help execute the tree
+        """
+        
 
 class splitNode(Node):
 
@@ -73,9 +105,9 @@ class splitNode(Node):
 
     def execute():
         pass
-    """
-    This function will help execute the tree
-    """
+        """
+        This function will help execute the tree
+        """
 
 
 class visualizeNode(Node):
@@ -85,10 +117,30 @@ class visualizeNode(Node):
         self.ts = None
 
     def execute():
-        pass
-    """
-    This function will help execute the tree
-    """
+        # pass
+        """
+        This function will help execute the tree
+        "plot", "histogram", "summary", "box_plot", "shapiro_wilk",
+            "d_agostino", "anderson_darling", "qq_plot"]
+        """
+        return_value = None
+        if self.op == "plot":
+            viz.plot(self.ts)
+        elif self.op == "histogram":
+            viz.histogram(self.ts)
+        elif self.op == "summary":
+            return_value = viz.summary(self.ts)
+        elif self.op == "box_plot":
+            viz.box_plot(self.ts)
+        elif self.op == "shapiro_wilk":
+            return_value = viz.shapiro_wilk(self.ts)
+        elif self.op == "d_agostino":
+            return_value = viz.d_agostino(self.ts)
+        elif self.op == "anderson_darling":
+            return_value = viz.anderson_darling(self.ts)
+        elif self.op == "qq_plot":
+            viz.qq_plot(self.ts)
+        return return_value
 
 class evalNode(Node):
 
@@ -98,10 +150,20 @@ class evalNode(Node):
         self.y_forecast = None
 
     def execute():
-        pass
-    """
-    This function will help execute the tree
-    """
+        # pass
+        """
+        This function will help execute the tree
+        """
+        return_value = None
+        if self.op == "MSE":
+            return_value = viz.MSE(self.ts)
+        elif self.op == "RMSE":
+            return_value = viz.RMSE(self.ts)
+        elif self.op == "MAPE":
+            return_value = viz.MAPE(self.ts)
+        elif self.op == "sMAPE":
+            return_value = viz.sMAPE(self.ts)
+        return return_value   
 
 # ------- End Node Classes --------------
 
