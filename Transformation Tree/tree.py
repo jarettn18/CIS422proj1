@@ -3,7 +3,7 @@ File: tree.py
 Class: CIS 422
 Date: January 20, 2021
 Team: The Nerd Herd
-Head Programmers: Callista West, Zeke Petersen
+Head Programmers: Callista West, Zeke Petersen, Jack Sanders
 Version 0.1.0
 
 Basic Tree implementation
@@ -22,7 +22,7 @@ OPS = {
        "preps": ["denoise", "impute_missing_data", "impute_outliers",
             "longest_continuous_run", "clip", "assign_time", "difference",
             "scaling", "standardize", "logarithm", "cubic_roots"],
-       "splits": ["design_matrix"],
+       "splits": ["ts2db"],
        "models": ["mlp", "rf"],
        "evals": ["MSE", "RMSE", "MAPE", "sMAPE"],
        "visualizes":["plot", "histogram", "summary", "box_plot", "shapiro_wilk",
@@ -130,7 +130,7 @@ class Tree:
 
         self._add_node(op_list, new_node)
 
-    def add_split_node(self, op_list, op, prev_index):
+    def add_split_node(self, op_list, op):
         """
         For arguments, see the splitNode class __init__
 
@@ -146,12 +146,11 @@ class Tree:
             if op_list[-1] not in OPS["preps"]:
                 raise Exception("Illegally adding split node after wrong node type\n")
 
-        new_node = splitNode(op, prev_index)
+        new_node = splitNode(op)
 
         self._add_node(op_list, new_node)
 
-    def add_model_node(self, op_list, op, input_dimension, output_dimension,
-                                    hidden_layers):
+    def add_model_node(self, op_list, op):
         """
         For arguments, see the modelNode class __init__
 
@@ -167,7 +166,7 @@ class Tree:
             if op_list[-1] not in OPS["splits"]:
                 raise Exception("Illegally adding model node after wrong node type\n")
 
-        new_node = modelNode(op, None, None, None)
+        new_node = modelNode(op)
 
         self._add_node(op_list, new_node)
 
@@ -227,7 +226,8 @@ class Tree:
 # END TREE DEFINITION --------------------------
 
 # Below here are functions that may need to be modified and moved
-# to the Tree class
+# to the Tree class -- these were original ideas for how to implement tree functions
+#-----------------------------------------------------------------------------------
 
 def replicate_subtree(self, root_node):
     """
@@ -363,3 +363,23 @@ def printNode(root):
         print("---------------") # extra space in between levels
 
     print(".................end of tree...............\n")
+
+
+def replace(self, old, new):
+    """
+    Function to replace a process step with a different operator, such as
+        replacing denoise() with clip()
+    :param self: binding arguments with class Node
+           old: the orignal process step that will be replaced
+           new: the different operator, that will be taking the place of the original
+               operator
+    : return: returns None
+    """
+    pass
+    """
+    #still need to check that old and new nodes are in same "category"
+    if old is not None:
+        self.folder.append(new)
+        self.folder.remove(old)
+        return None
+    """
