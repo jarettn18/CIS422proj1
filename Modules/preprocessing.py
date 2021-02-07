@@ -281,7 +281,7 @@ def cubic_roots(time_series):
     return cubed_time_series
 
 
-def split_data(time_series, perc_training, perc_valid, perc_test):
+def split_data(time_series, perc_training=50, perc_test=50):
     """
     Splits a time series into
     training, validation, and testing according to the given percentages.
@@ -292,35 +292,28 @@ def split_data(time_series, perc_training, perc_valid, perc_test):
     :return: None
     """
     # Create error handling for if percentages are of same val for equal comparison
-    if perc_training >= perc_valid:
+    if perc_training + perc_test == 100:
         # Get length of ts
-        ts_size = len(time_series.index)
+        ts_size = len(time_series)
         # get percentage val to be perc
         test_perc = (perc_test / 100)
-        # get percentage val to be valid
-        test_valid = (perc_valid / 100)
         # get percentage val to be training
         test_training = (perc_training / 100)
         # size of training Data
         t_p_l = int((ts_size * test_perc))
-        # size of validation Data
-        t_v_l = int((ts_size * test_valid))
         # size of training Data
         t_t_l = int((ts_size * test_training))
+        print(t_p_l)
+        print(t_t_l)
         # cut TS based on percentage for Training
-        p_tr_cut = time_series.iloc[:t_t_l, :]
-        p_tr_cut.to_csv("perc_training.csv", index=False)
-        # cut TS based on percentage for Training
-        # - from end of Training Data to length of Validation
-        p_v_cut = time_series.iloc[t_t_l:(t_v_l + t_t_l), :]
-        p_v_cut.to_csv("perc_valid.csv", index=False)
-        # cut TS based on percentage from Training
-        # - from end of valid Data to end of DataFrame
-        p_test_cut = time_series.iloc[(t_p_l + t_t_l):, :]
-        p_test_cut.to_csv("perc_test.csv", index=False)
+        train_ts = time_series[0:t_p_l]
+        # cut TS based on percentage for Testing
+        test_ts = time_series[t_p_l:]
+
+        return train_ts, test_ts
     else:
-        print("Error: Training percentage and Validation percentage "
-              + "must be equal")
+        print("Error: Training percentage and Test Percentage "
+              + "must sum to 100")
 
 
 def design_matrix(time_series, prev_index):
@@ -406,8 +399,7 @@ def design__matrix(time_series, m_i, t_i, m_O, t_O):
     return matrix
 
 
-def ts2db(input_file, perc_training, perc_valid, perc_test, input_index,
-          output_index, output_file):
+def ts2db(input_file_train, input_file_test=None):
     """
     combines reading a file, splitting the
     data, converting to database, and producing the training databases.
@@ -420,6 +412,21 @@ def ts2db(input_file, perc_training, perc_valid, perc_test, input_index,
     :param output_index: array pre-made to be filled for error testing functions
     :param output_file: file for data to be written into
     :return: Writes Matrix to csv file
+    """
+    data = read_from_file(input_file_train)
+    train_data = denoise(data)
+
+    if (input_file_test is None):
+        train_data, test_data = split_data(ts, 50, 50)
+    else:
+        test = read_from_file(input_file_test)
+        test_data = denoise(test)
+	
+    train_ts, train_inputs, prev_i = design_matrix(train_data, 0)
+    test_ts, test_inputs, ignore_this = design_matrix(test_data, prev_i + 1)
+	
+    return train_ts, train_inputs, test_ts, test_inputs
+	
     """
     # read csv file
     ts = read_from_file(input_file)
@@ -441,3 +448,4 @@ def ts2db(input_file, perc_training, perc_valid, perc_test, input_index,
     # take matrix and write to file to train model
     write_to_file(output_file, dt_matrix)
     return dt_matrix
+	"""
