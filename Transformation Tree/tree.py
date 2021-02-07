@@ -101,7 +101,7 @@ class Tree:
             found_node = self._find_node(op_list)
             if found_node is not None:
                 node.parent_list = op_list
-                node.parent_op = op_list[-1]
+                node.parent = found_node
                 found_node.children.append(node)
             else:
                 raise Exception("Unable to add node\n")
@@ -220,6 +220,19 @@ class Tree:
     Can implement the execute functions of each class to simplify this function
     """
     def execute_tree(infile):
+        pass
+
+    def replicate_subtree():
+        pass
+    def replicate_path():
+        pass
+
+    def add_subtree_to_node():
+        pass
+
+    def add_path_to_node():
+        pass
+    def replace_operator():
         pass
 
 

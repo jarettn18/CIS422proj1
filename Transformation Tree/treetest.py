@@ -22,7 +22,7 @@ def test_basics():
     tree_test.add_prep_node(["denoise"], "impute_missing_data", None, None, None)
     assert tree_test.root.op == "denoise"
     assert tree_test.root.children[0].op == "impute_outliers"
-    assert tree_test.root.children[1].parent_op == "denoise"
+    assert tree_test.root.children[1].parent == tree_test.root
     assert tree_test.root.children[0].parent_list == ["denoise"]
 
 def test_all_node_types():
@@ -30,22 +30,39 @@ def test_all_node_types():
     tree_test = Tree()
 
     tree_test.add_prep_node([], "denoise", None, None, None)
+    tree_test.add_split_node(["denoise"], "ts2db")
+    tree_test.add_visualize_node(["denoise"], "box_plot")
+    tree_test.add_model_node(["denoise", "ts2db"], "rf")
+    tree_test.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
+    assert tree_test.root.op == "denoise"
+    assert tree_test.root.children[0].op == "ts2db"
+    assert tree_test.root.children[1].op == "box_plot"
+    assert tree_test.root.children[0].children[0].op == "rf"
+    assert tree_test.root.children[0].children[0].children[0].op == "MSE"
+
+def test_load_save():
+    print("Begin test_load_save\n")
+    tree_test = Tree()
+
+    tree_test.add_prep_node([], "denoise", None, None, None)
     tree_test.add_split_node(["denoise"], "design_matrix", 0)
     tree_test.add_visualize_node(["denoise"], "box_plot")
     tree_test.add_model_node(["denoise", "design_matrix"], "rf", 1, 2, 100)
     tree_test.add_eval_node(["denoise", "design_matrix", "rf"], "MSE")
+    tree_saving = Save.save_tree(tree_test, "testingtree")
+    tree_loading = Save.load_tree(tree_test, "testingtree")
     assert tree_test.root.op == "denoise"
     assert tree_test.root.children[0].op == "design_matrix"
     assert tree_test.root.children[1].op == "box_plot"
     assert tree_test.root.children[0].children[0].op == "rf"
     assert tree_test.root.children[0].children[0].children[0].op == "MSE"
-    tree_saving = Save.save_tree(tree_test, "testingtree")
-    tree_loading = Save.load_tree(tree_test, "testingtree")
+
 
 def main():
     print("----------- Begin testing ------------\n")
     test_basics()
     test_all_node_types()
+    # test_load_save()
     print("---------- All tests passed ----------\n")
 
 

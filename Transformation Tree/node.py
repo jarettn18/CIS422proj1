@@ -23,13 +23,11 @@ import model as mod
 # Represents a node of an n-ary tree using a node Class
 class Node:
     # creating a new tree node
-    def __init__(self, op, parent_op):
+    def __init__(self, op, parent):
         self.op = op
-        self.parent_op = parent_op
+        self.parent = parent
         self.children = []         # Filled in during execution
-
-        # Filled in when added? May run into problems when edits are made
-        self.parent_list = []
+        self.executed = 0
 
     def execute():
         pass
