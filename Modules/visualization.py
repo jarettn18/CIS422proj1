@@ -35,7 +35,7 @@ from numpy import percentile
 def csv_to_ts(csv, y):
     """
     .csv: matrix, y: y-axis/title -> dataframe w/ two columns
-    
+
     TODO: find function other than assign to pass y in as unique title
     TODO: provide more customizability for periods
     """
@@ -80,7 +80,7 @@ def histogram(series):
             pyplot.xlabel('categories')
             pyplot.ylabel('values')
             pyplot.show()
-    else:   
+    else:
         series.hist()
         pyplot.title('Series')
         pyplot.xlabel('categories')
@@ -119,8 +119,8 @@ def box_plot(series):
 def shapiro_wilk(series):
     """
     takes one TS
-    
-    SW tests the null hypothesis that a sample 
+
+    SW tests the null hypothesis that a sample
     came from a normally distributed population.
     """
     # Shapiro-Wilk Test
@@ -144,7 +144,7 @@ def shapiro_wilk(series):
 
 def d_agostino(series):
     """
-    AG tests the null hypothesis that a sample 
+    AG tests the null hypothesis that a sample
     came from a normally distributed population.
     """
     # normality test
@@ -164,7 +164,7 @@ def d_agostino(series):
 
 def anderson_darling(series):
     """
-    AD tests the null hypothesis that a sample 
+    AD tests the null hypothesis that a sample
     came from a normally distributed population.
     """
     # normality test
@@ -195,7 +195,7 @@ def qq_plot(series):
 def MSE(actual, forecast):
     """
     Mean Squared Error:
-    average squared difference between the 
+    average squared difference between the
     estimated values and the actual value.
     TODO: edge cases
     """
@@ -224,7 +224,7 @@ def RMSE(actual, forecast):
 def MAPE(actual, forecast):
     """
     Mean Absolute Percentage Error (MAPE)
-    average absolute percent error for each time period 
+    average absolute percent error for each time period
     minus actual values divided by actual values.
     TODO: edge cases
     """
@@ -286,18 +286,14 @@ def testing(csv):
     actual = [12, 13, 14, 15, 15,22, 27]
     forecast = [11, 13, 14, 14, 15, 16, 18]
     mape_stats = MAPE(actual, forecast)
-    print("\n----Symmetrical Mean Absolute Percentage Error----") 
+    print("\n----Symmetrical Mean Absolute Percentage Error----")
     actual = np.array([12, 13, 14, 15, 15,22, 27])
     forecast = np.array([11, 13, 14, 14, 15, 16, 18])
     smape_stats = sMAPE(actual, forecast)
-    
+
 # test on one-dimensional input
-csv = '../TestData/1_temperature_train.csv'
-testing(csv)
+# csv = '../TestData/1_temperature_train.csv'
+# testing(csv)
 
 
 # In[ ]:
-
-
-
-

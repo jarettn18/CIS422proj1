@@ -48,7 +48,7 @@ terminal).
     * seaborn
     * matplotlib
     * cpickle
-
+    * statsmodels
 
 ### User Guide
 --------------
