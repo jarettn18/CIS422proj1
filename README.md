@@ -3,11 +3,13 @@
 README containing a description of the software and directory structure,
 dependencies and instructions for installation, and a short user guide.
 
-CIS 422
+CIS 422 - Software Methodologies 1
+
+Creation date: 1/15/2021
 
 Team: The Nerd Herd
 
-Creation date: 1/15/2021
+Author: Zeke Petersen
 
 
 ### Project Description
@@ -24,7 +26,9 @@ pipelines can be saved to go into production to make actionable forecasts.
 and internal code standards
 * ./Documentation - contains the SRS and SDS
 * ./TestData - contains input .csv files used to test the various modules
-* ./Transformation Tree - contains node and tree class definitions and methods
+* ./Transformation Tree - contains node and tree class definitions and methods,
+along with tree saving and loading functions
+    * /pickle_objects - contains any saved Tree objects
 
 
 ### Dependencies and Instructions for Installation
@@ -116,16 +120,26 @@ node class.
 To replicate a subtree or path invoke one of the following methods that will
 return a new Tree object:
 
-> replicate_subtree(["denoise", "ts2db"])
+> my_subtree = replicate_subtree(["denoise", "ts2db"])
 
-> replicate_path(["denoise", "ts2db"])
+> my_path = replicate_path(["denoise", "ts2db"])
 
 Replicating a path will copy all nodes represented by the input list of operators
 into a new tree containing only those nodes. A subtree will include all nodes
 following the last node in the list (which will be the root of the new tree).
 
 ### **Add a subtree or path to an existing tree**
-TODO
+
+To append one tree to another, invoke the add_subtree method:
+
+> add_subtree(["denoise", "ts2db", "rf"], my_subtree)
+
+This will append the root of the subtree as a child to the node of the main tree
+specified by the first argument. It will also copy the rest of the contents of
+the subtree as one would expect.
+
+Keep in mind that this method will also enforce the ordering described by normal
+node additions described above.
 
 ### **Execute a tree or pipeline**
 TODO
@@ -136,7 +150,7 @@ To save a Tree object as a pickle, invoke the following function:
 
 > save_tree(my_tree, "my_tree_filename")
 
-To load a pickle to a Tree object, invoke the following function:
+To load a Tree object from a pickle, invoke the following function:
 
 > my_loaded_tree = load_tree("my_tree_filename")
 
