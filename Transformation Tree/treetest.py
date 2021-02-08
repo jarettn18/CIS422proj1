@@ -11,7 +11,7 @@ Testing of tree.py, node.py, and save_load.py
 from tree import Tree
 import tree
 import save_load as SL
-from save_load import Save
+
 
 def test_basics():
     print("Begin test_basics\n")
@@ -49,8 +49,8 @@ def test_load_save():
     tree_test.add_visualize_node(["denoise"], "box_plot")
     tree_test.add_model_node(["denoise", "ts2db"], "rf")
     tree_test.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
-    save_tree(tree_test, "testingtree")
-    tree_loaded = load_tree(tree_test, "testingtree")
+    SL.save_tree(tree_test, "testingtree")
+    tree_loaded = SL.load_tree(tree_test, "testingtree")
     assert tree_loaded.root.op == "denoise"
     assert tree_loaded.root.children[0].op == "ts2db"
     assert tree_loaded.root.children[1].op == "box_plot"
