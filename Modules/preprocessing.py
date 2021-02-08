@@ -1,10 +1,10 @@
 """
 File: preprocessing.py
 Class: CIS 422
-Date: February 2, 2021
+Date: February 8, 2021
 Team: The Nerd Herd
 Head Programmer: Logan Levitre
-Version 1.0.5
+Version 1.1.0
 
 Overview: Preprocessing functions to be used with Time Series Data.
 """
@@ -13,9 +13,7 @@ from math import pow, log10
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import datetime as dt
-
-
-# import janitor as pyj
+import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -63,7 +61,6 @@ def impute_missing_data(time_series):
     restored_series = time_series.copy()
     data_col = time_series.columns[len(restored_series.columns) - 1]
     restored_series[data_col].replace(0, restored_series[data_col].mean().round(5), inplace=True)
-    #restored_series[data_col].replace(0, np.nan, inplace=True)
     # find NaN and fill with data to the right of it
     restored_series = restored_series.fillna(method='ffill')
     return restored_series
@@ -102,14 +99,10 @@ def longest_continuous_run(time_series):
     :param time_series: Time series data
     :return: new a time series without any missing data or outliers
     """
-    # copy time_series   
-    # DISCLAIMER: Code lines 92-101 Referenced from
-    # https://stackoverflow.com/questions/41494444/pandas-find-longest-stretch-without-nan-values
     # get data values and store as array
     longest = time_series.copy()
     data_col = longest.columns[len(longest.columns) - 1]
     longest[data_col].replace(0, np.nan, inplace=True)
-    print(longest)
     lr_index = longest.index[pd.isna(longest[data_col])].tolist()
     # find difference between index of TS
     # if lr_index is empty then there are no NaN's
@@ -325,13 +318,9 @@ def design_matrix(time_series, prev_index):
     :param prev_index: forecasted index for error testing
     :return: a numpy Matrix data
     """
-    # BEFORE TAKING TIME AWAY
-    # are we to create/ find algo that takes input and makes it output?
     inputs = []
     tmp_ts = time_series.copy()
     columns = len(tmp_ts.columns)
-
-    # data_col = tmp_ts.columns[len(tmp_ts.columns) - 1]
 
     index = 0
     # t = len(tmp_ts)'
@@ -401,6 +390,7 @@ def design__matrix(time_series, m_i, t_i, m_O, t_O):
 
 def ts2db(input_file_train, input_file_test=None):
     """
+    Converts time series into a data base
     :param input_file_train: Training file to be read (and split if necessary)
 	:param input_file_test: Testing file to be read
     :return train_ts: Training Time Series for Validation
@@ -408,20 +398,20 @@ def ts2db(input_file_train, input_file_test=None):
     :return test_ts: Test Time Series for Forecast Accuracy
     :return test_inputs: Input Time Series for Forecast
     """
-	#Denoise The Training Data
+    # Denoise The Training Data
     data = read_from_file(input_file_train)
     denoised_data = denoise(data)
 
-	#If Test File passed in, Training Data does not need to be split
-    if (input_file_test is None):
+    # If Test File passed in, Training Data does not need to be split
+    if input_file_test is None:
         train_data, test_data = split_data(denoised_data, 50, 50)
     else:
         test = read_from_file(input_file_test)
         test_data = denoise(test)
         train_data = denoised_data
-	
-	#Create Inputs and Time Series
+
+    # Create Inputs and Time Series
     train_ts, train_inputs, prev_i = design_matrix(train_data, 0)
     test_ts, test_inputs, ignore_this = design_matrix(test_data, prev_i + 1)
-	
+
     return train_ts, train_inputs, test_ts, test_inputs

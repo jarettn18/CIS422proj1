@@ -222,57 +222,68 @@ class Tree:
     def execute_tree(infile):
         pass
 
-    # def replicate_subtree(self, op_list)
-
-    # in theory, creating a new tree object, finding the node from op_list,
-    # making a deepcopy of it and then setting the root of the new subtree as the
-    # copied node should work
-    def replicate_subtree(self, tree_node):
-        # create new tree with param node as the root
-        new_root = Node(op=tree_node.op, parent=None)
-        new_root.children = tree_node.children
-        new_tree = Tree(new_root)
-        # returns a new tree with new_root that has correct children
-        return new_tree
+    def replicate_subtree(self, op_list):
+        if self.root is not None:
+            # finding the node from op_list
+            new_root = self._find_node(op_list)
+            # make deep copy of node
+            if new_root is not None:
+                # create new tree obj
+                new_tree = Tree()
+                deep_copy = deepcopy(new_root)
+                new_tree._add_node(op_list, deep_copy)
+                return new_tree
+            else:
+                raise Exception("Error cannot replicate subtree")
 
     # def replicate_path(self, op_list)
 
     # May be trickier since you would have to create new nodes and add them as you find them
     # to the new tree since you only want the ops and optional arguments, not all the children
     # that each node may have had in the original tree
-    def replicate_path(self, op_arr, node):
-       if self._find_node(op_arr) is None:
-           return
-       else:
-           new_root = Node(op=self.root.op, parent=None)
-           op_arr.append(node.op)
-           new_root.children = op_arr
-           new_tree = Tree(new_root)
-           return new_tree
+    def replicate_path(self, op_list):
+
+        # split op list
+        split_ops = op_list.split()
+        # create new tree
+        new_path = Tree()
+        # loop through list to get individual nodes one by one
+        # deep copy each node
+        for idx in op_list:
+            # check if node is in original tree
+            found_node = self._find_node(split_ops[0])
+            if found_node is not None:
+            # create new node
+            deep_copy = deepcopy(found_node)
+            # add node to tree with children of that node
+            new_path._add_node(split_ops, deep_copy)
+            # pop recently inserted node op from list
+            split_ops.pop()
+        return new_tree
 
     # def add_subtree(self, op_list, subtree)
 
     # I would think one could just find the node, make a deepcopy of the root node of
     # the tree to be added, and then append the copied node to the found node's children
-    def add_subtree(self, root_node, new_node):
-        place_holder = replicate_subtree(root_node)
-        new_node.children.append(place_holder)
+    def add_subtree(self, op_list, subtree):
+        # find the node
+        if self.root is not None:
+            found_node = self._find_node(op_list)
+            if found_node is not None:
+                # create deep copy of root node of subtree
+                deep_copy = deepcopy(subtree.root)
+                # append copied node to the found nodes children
+                found_node.children.append(deep_copy)
+            else:
+                raise Exception("Unable to add subtree")
 
-
-    # May be irrelevant since a path to add is just a tree object --
-    # add_subtree would have that handled
-    def add_path_to_node(self, path_list, current_node):
-        if self._find_node(path_list) is None:
-            return None
-        # if valid path - assign path with current node being root
-        current_node.children = path_list
 
 
     def replace_operator(self, op_list, node):
 		#Find Node in Op Liust
 		for i in range(len(op_list)):
-			#Node found
-			if node.op == op_list[i].op:
+			# Node found
+		    if node.op == op_list[i].op:
 			 	#Reassign Pointers
 				node.parent = op_list[i].parent
 				node.children = op_list[i].children
@@ -280,7 +291,6 @@ class Tree:
 					op_list[i].children[j].parent = node
 				#Remove node from tree
 				op_list[i] = node
-
 
 
 # END TREE DEFINITION --------------------------
