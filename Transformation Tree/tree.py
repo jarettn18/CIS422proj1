@@ -268,8 +268,19 @@ class Tree:
         current_node.children = path_list
 
 
-    def replace_operator():
-        pass
+    def replace_operator(self, op_list, node):
+		#Find Node in Op Liust
+		for i in range(len(op_list)):
+			#Node found
+			if node.op == op_list[i].op:
+			 	#Reassign Pointers
+				node.parent = op_list[i].parent
+				node.children = op_list[i].children
+				for j in range(len(op_list[i].children)):
+					op_list[i].children[j].parent = node
+				#Remove node from tree
+				op_list[i] = node
+
 
 
 # END TREE DEFINITION --------------------------
