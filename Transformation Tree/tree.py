@@ -222,7 +222,11 @@ class Tree:
     def execute_tree(infile):
         pass
 
+    # def replicate_subtree(self, op_list)
 
+    # in theory, creating a new tree object, finding the node from op_list,
+    # making a deepcopy of it and then setting the root of the new subtree as the
+    # copied node should work
     def replicate_subtree(self, tree_node):
         # create new tree with param node as the root
         new_root = Node(op=tree_node.op, parent=None)
@@ -231,7 +235,11 @@ class Tree:
         # returns a new tree with new_root that has correct children
         return new_tree
 
+    # def replicate_path(self, op_list)
 
+    # May be trickier since you would have to create new nodes and add them as you find them
+    # to the new tree since you only want the ops and optional arguments, not all the children
+    # that each node may have had in the original tree
     def replicate_path(self, op_arr, node):
        if self._find_node(op_arr) is None:
            return
@@ -242,12 +250,17 @@ class Tree:
            new_tree = Tree(new_root)
            return new_tree
 
+    # def add_subtree(self, op_list, subtree)
 
+    # I would think one could just find the node, make a deepcopy of the root node of
+    # the tree to be added, and then append the copied node to the found node's children
     def add_subtree(self, root_node, new_node):
         place_holder = replicate_subtree(root_node)
         new_node.children.append(place_holder)
 
 
+    # May be irrelevant since a path to add is just a tree object --
+    # add_subtree would have that handled
     def add_path_to_node(self, path_list, current_node):
         if self._find_node(path_list) is None:
             return None

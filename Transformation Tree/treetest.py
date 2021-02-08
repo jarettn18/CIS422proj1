@@ -62,7 +62,7 @@ def main():
     print("----------- Begin testing ------------\n")
     test_basics()
     test_all_node_types()
-    # test_load_save()
+    test_load_save()
     print("---------- All tests passed ----------\n")
 
 
