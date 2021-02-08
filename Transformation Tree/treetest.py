@@ -45,17 +45,17 @@ def test_load_save():
     tree_test = Tree()
 
     tree_test.add_prep_node([], "denoise", None, None, None)
-    tree_test.add_split_node(["denoise"], "design_matrix", 0)
+    tree_test.add_split_node(["denoise"], "ts2db")
     tree_test.add_visualize_node(["denoise"], "box_plot")
-    tree_test.add_model_node(["denoise", "design_matrix"], "rf", 1, 2, 100)
-    tree_test.add_eval_node(["denoise", "design_matrix", "rf"], "MSE")
-    tree_saving = Save.save_tree(tree_test, "testingtree")
-    tree_loading = Save.load_tree(tree_test, "testingtree")
-    assert tree_test.root.op == "denoise"
-    assert tree_test.root.children[0].op == "design_matrix"
-    assert tree_test.root.children[1].op == "box_plot"
-    assert tree_test.root.children[0].children[0].op == "rf"
-    assert tree_test.root.children[0].children[0].children[0].op == "MSE"
+    tree_test.add_model_node(["denoise", "ts2db"], "rf")
+    tree_test.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
+    save_tree(tree_test, "testingtree")
+    tree_loaded = load_tree(tree_test, "testingtree")
+    assert tree_loaded.root.op == "denoise"
+    assert tree_loaded.root.children[0].op == "ts2db"
+    assert tree_loaded.root.children[1].op == "box_plot"
+    assert tree_loaded.root.children[0].children[0].op == "rf"
+    assert tree_loaded.root.children[0].children[0].children[0].op == "MSE"
 
 
 def main():
