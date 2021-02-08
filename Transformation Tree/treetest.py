@@ -50,7 +50,8 @@ def test_load_save():
     tree_test.add_model_node(["denoise", "ts2db"], "rf")
     tree_test.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
     SL.save_tree(tree_test, "testingtree")
-    tree_loaded = SL.load_tree(tree_test, "testingtree")
+    # tree_loaded = SL.load_tree(tree_test, "testingtree")
+    tree_loaded = SL.load_tree("testingtree")
     assert tree_loaded.root.op == "denoise"
     assert tree_loaded.root.children[0].op == "ts2db"
     assert tree_loaded.root.children[1].op == "box_plot"

@@ -52,8 +52,95 @@ terminal).
 
 ### User Guide
 --------------
+### **Setup**
+
+To use this software, it is assumed that this repository has been cloned onto
+the user's local machine and that the required installations described above
+have been completed.
+
+To use the entirety of the Transformation Tree library, add the following
+statements to the top of your Python file:
+
+> import tree
+
+> import save_load
+
+Any function calls below are merely examples for how to call the various methods
+and functions available to the programmer.
+
+### **Create a Transformation Tree**
+
+To create a new Transformation Tree, invoke the constructor of the Tree class:
+
+> my_tree = Tree()
+
+### **Add nodes**
+
+To add nodes to your newly created Transformation Tree, invoke any of the five
+methods available for that purpose:
+
+> my_tree.add_prep_node([], "denoise", None, None, None)
+
+> my_tree.add_split_node(["denoise"], "ts2db")
+
+> my_tree.add_visualize_node(["denoise"], "box_plot")
+
+> my_tree.add_model_node(["denoise", "ts2db"], "rf")
+
+> my_tree.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
+
+Keep in mind that the Tree class enforces the ordering of nodes such that:
+* splitNodes, visualizeNodes, and prepNodes must either be the root, or
+immediately follow a prepNode.
+* modelNodes must either be the root, or immediately follow a splitNode
+* evalNodes must either be the root, or immediately follow a modelNode
+
+The first argument of each call represents a list of operators of existing nodes
+that represent the path to the node after which you wish to add another node.
+
+### **Replacing a process step**
+
+To replace an operator of an existing node, invoke the replace_operator
+method:
+
+> my_tree.replace_operator(["denoise", "ts2db", "rf"], "mlp")
+
+The first argument represents a list of operators of existing nodes that
+represent the path to the node you wish to modify. The second argument
+represents the new operator you wish to apply. Keep in mind, the tree will
+enforce that the new operator is of another valid operator of that existing
+node class.
+
+### **Replicate subtrees or paths**
+
+To replicate a subtree or path invoke one of the following methods that will
+return a new Tree object:
+
+> replicate_subtree(["denoise", "ts2db"])
+
+> replicate_path(["denoise", "ts2db"])
+
+Replicating a path will copy all nodes represented by the input list of operators
+into a new tree containing only those nodes. A subtree will include all nodes
+following the last node in the list (which will be the root of the new tree).
+
+### **Add a subtree or path to an existing tree**
 TODO
 
+### **Execute a tree or pipeline**
+TODO
+
+### **Save or load a Transformation Tree**
+
+To save a Tree object as a pickle, invoke the following function:
+
+> save_tree(my_tree, "my_tree_filename")
+
+To load a pickle to a Tree object, invoke the following function:
+
+> my_loaded_tree = load_tree("my_tree_filename")
+
+Pickle files will by default be saved in the pickle_objects directory.
 
 ### Authors
 -----------

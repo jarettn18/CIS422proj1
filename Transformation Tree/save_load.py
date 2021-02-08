@@ -27,7 +27,8 @@ def save_tree(tree, file_name):
     pickle_out.close()
     return None
 
-def load_tree(tree, file_name):
+def load_tree(file_name):
+# def load_tree(tree, file_name):
     """
     : tree: same tree object that was passed into save_tree()
     : file_name: same file name (file_name) that the tree object was saved to in save_tree()
