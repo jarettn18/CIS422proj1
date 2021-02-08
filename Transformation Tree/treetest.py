@@ -40,6 +40,23 @@ def test_all_node_types():
     assert tree_test.root.children[0].children[0].op == "rf"
     assert tree_test.root.children[0].children[0].children[0].op == "MSE"
 
+def test_replicate_path():
+    print("Begin test_replicate_path\n")
+    tree_test = Tree()
+
+    tree_test.add_prep_node([], "denoise", None, None, None)
+    tree_test.add_split_node(["denoise"], "ts2db")
+    tree_test.add_visualize_node(["denoise"], "box_plot")
+    tree_test.add_model_node(["denoise", "ts2db"], "rf")
+    tree_test.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
+
+    rep = tree_test.replicate_path(["denoise", "ts2db", "rf"])
+
+    assert rep.root.op == "denoise"
+    assert rep.root.children[0].op == "ts2db"
+    assert len(rep.root.children) == 1
+    assert rep.root.children[0].children[0].op == "rf"
+
 def test_load_save():
     print("Begin test_load_save\n")
     tree_test = Tree()
@@ -63,6 +80,7 @@ def main():
     print("----------- Begin testing ------------\n")
     test_basics()
     test_all_node_types()
+    test_replicate_path()
     test_load_save()
     print("---------- All tests passed ----------\n")
 
