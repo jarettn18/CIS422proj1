@@ -284,12 +284,12 @@ def cubic_roots(time_series):
 def split_data(time_series, perc_training=50, perc_test=50):
     """
     Splits a time series into
-    training, validation, and testing according to the given percentages.
+    training and testing according to the given percentages.
     :param time_series: Time series data
     :param perc_training: percentage of time series data to be used for training
-    :param perc_valid: percentage of time series data to be used for validation
     :param perc_test: percentage of time series data to be used for testing
-    :return: None
+    :return train_ts: Return the Training Time Series
+	:return test_ts: Return the Testing Time series
     """
     # Create error handling for if percentages are of same val for equal comparison
     if perc_training + perc_test == 100:
@@ -401,51 +401,27 @@ def design__matrix(time_series, m_i, t_i, m_O, t_O):
 
 def ts2db(input_file_train, input_file_test=None):
     """
-    combines reading a file, splitting the
-    data, converting to database, and producing the training databases.
-    :param input_file: file to be read and split
-    :param perc_training: percentage of data to be split into training data
-    :param perc_valid: percentage of data to be split into valid data
-    :param perc_test: percentage of the data to be split into test data
-    :param input_index: array pre-made to be filled for error testing functions?
-            what indexes to take data from in ts
-    :param output_index: array pre-made to be filled for error testing functions
-    :param output_file: file for data to be written into
-    :return: Writes Matrix to csv file
+    :param input_file_train: Training file to be read (and split if necessary)
+	:param input_file_test: Testing file to be read
+    :return train_ts: Training Time Series for Validation
+    :return train_inputs: Input Time Series for Training
+    :return test_ts: Test Time Series for Forecast Accuracy
+    :return test_inputs: Input Time Series for Forecast
     """
+	#Denoise The Training Data
     data = read_from_file(input_file_train)
-    train_data = denoise(data)
+    denoised_data = denoise(data)
 
+	#If Test File passed in, Training Data does not need to be split
     if (input_file_test is None):
-        train_data, test_data = split_data(ts, 50, 50)
+        train_data, test_data = split_data(denoised_data, 50, 50)
     else:
         test = read_from_file(input_file_test)
         test_data = denoise(test)
+        train_data = denoised_data
 	
+	#Create Inputs and Time Series
     train_ts, train_inputs, prev_i = design_matrix(train_data, 0)
     test_ts, test_inputs, ignore_this = design_matrix(test_data, prev_i + 1)
 	
     return train_ts, train_inputs, test_ts, test_inputs
-	
-    """
-    # read csv file
-    ts = read_from_file(input_file)
-    # split into different sets of data
-    split_data(time_series=ts, perc_training=perc_training, perc_test=perc_test, perc_valid=perc_valid)
-    # get training data
-    ts_training = read_from_file("perc_training.csv")
-    # what part of the history we are taking ie what indexes of training we are taking
-    # what the future to expect
-    # take leftmost to right most of time series - ie from top(left) to bottom(right)
-    # should have it so this v takes the first design_matrix function to produce
-    # if not given input/output index get random ones
-    matrix_other = design__matrix(ts_training, 5, 10, 5, 15)
-    # else create matrix and using pre-made loop, create one
-    # giving input/output index values
-    design_matrix(ts_training, input_index, output_index)
-    dt_matrix = pd.DataFrame(matrix_other)
-    # dt_matrix.drop(dt_matrix.index[0], axis=0, inplace=True)
-    # take matrix and write to file to train model
-    write_to_file(output_file, dt_matrix)
-    return dt_matrix
-	"""
