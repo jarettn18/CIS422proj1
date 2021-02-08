@@ -222,16 +222,39 @@ class Tree:
     def execute_tree(infile):
         pass
 
-    def replicate_subtree():
-        pass
-    def replicate_path():
-        pass
 
-    def add_subtree_to_node():
-        pass
+    def replicate_subtree(self, tree_node):
+        # create new tree with param node as the root
+        new_root = Node(op=tree_node.op, parent=None)
+        new_root.children = tree_node.children
+        new_tree = Tree(new_root)
+        # returns a new tree with new_root that has correct children
+        return new_tree
 
-    def add_path_to_node():
-        pass
+
+    def replicate_path(self, op_arr, node):
+       if self._find_node(op_arr) is None:
+           return
+       else:
+           new_root = Node(op=self.root.op, parent=None)
+           op_arr.append(node.op)
+           new_root.children = op_arr
+           new_tree = Tree(new_root)
+           return new_tree
+
+
+    def add_subtree(self, root_node, new_node):
+        place_holder = replicate_subtree(root_node)
+        new_node.children.append(place_holder)
+
+
+    def add_path_to_node(self, path_list, current_node):
+        if self._find_node(path_list) is None:
+            return None
+        # if valid path - assign path with current node being root
+        current_node.children = path_list
+
+
     def replace_operator():
         pass
 
