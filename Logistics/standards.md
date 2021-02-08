@@ -37,9 +37,3 @@ Author: Zeke Petersen
 * It is assumed that we will be using Python 3.8 for the bulk of the project.
 
 * Tasks will be assigned at full group meetings, but will be adjusted as needed as we discover the actual time it takes to complete tasks.
-
-
-### Data Expectations
--------------------
-* A time series will be a csv of the form (time0,magnitude0),(time1,magnitude1),...,(timeN,magnitudeN) where time and magnitude are both non-negative values.
-  * There are some input files with either the time values missing or with an extra column. These will be handled by the user using the preprocessing functions as needed.
