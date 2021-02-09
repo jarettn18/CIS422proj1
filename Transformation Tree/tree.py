@@ -290,21 +290,25 @@ class Tree:
         dict_list = list(OPS.values())
         val_list = None
         node_to_find = None
+
+        # Find correct list from OPS
         for i in range(len(dict_list)):
             for j in range(len(dict_list[i])):
                 if (node == dict_list[i][j]):
                     val_list = dict_list[i]
                     break
         if val_list is None:
-			raise Exception("Node not found in OP dictionary")
+            raise Exception("Node not found in OP dictionary")
+
+        # Check that the node op being replaced is from same list
         for i in range(len(val_list)):
             if val_list[i] == op_list[len(op_list) - 1]:
-                    node_to_find = val_list[i]
-                    break
+                node_to_find = val_list[i]
+                break
         if node_to_find is None:
-		    raise Exception("Replacement Node is not of same type as Node to be replaced")
-        node = self._find_node(op_list)
-		node.op = node
+            raise Exception("Replacement Node is not of same type as Node to be replaced")
+        found_node = self._find_node(op_list)
+        found_node.op = node
 
 
 # END TREE DEFINITION --------------------------

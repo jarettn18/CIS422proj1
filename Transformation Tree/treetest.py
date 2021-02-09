@@ -99,13 +99,12 @@ def test_replace_operator():
 
     tree_test.add_prep_node([], "denoise", None, None, None)
     tree_test.add_split_node(["denoise"], "ts2db")
-    tree_test.add_visualize_node(["denoise"], "box_plot")
     tree_test.add_model_node(["denoise", "ts2db"], "rf")
     tree_test.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
 
     tree_test.replace_operator(["denoise", "ts2db", "rf"], "mlp")
 
-    assert treetest.root.children[0].children[0].op == "mlp"
+    assert tree_test.root.children[0].children[0].op == "mlp"
 
 def test_load_save():
     print("Begin test_load_save\n")
