@@ -1,3 +1,14 @@
+"""
+File: model_test.py
+Class: CIS 422
+Date: January 20, 2021
+Team: The Nerd Herd
+Head Programmer: Jarett Nishijo
+Version 1.1.0
+
+Overview: Testing for the modeling module
+"""
+
 import preprocessing
 import model as mp
 import numpy as np

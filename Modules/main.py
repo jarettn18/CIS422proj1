@@ -3,7 +3,7 @@ File: main.py
 Class: CIS 422
 Date: January 21, 2021
 Team: The Nerd Herd
-Head Programmers: Logan Levitre, Zeke Peterson, Jarett Nishijo, Callista West, Jack Sanders
+Head Programmers: Logan Levitre, Jarett Nishijo
 Version 0.1.0
 
 Overview: Main file for Machine Learning Models + Statistics Visualization
@@ -27,7 +27,7 @@ def main():
 	current_path = os.path.dirname(os.getcwd())
 	dir_list = os.listdir(current_path + "/TestData/")
 	dir_list.sort()
-	
+
 	for i in range(0, 10, 2):
 		fname_test = current_path + "/TestData/" + dir_list[i]
 		fname = current_path + "/TestData/" + dir_list[i+1]
@@ -38,7 +38,7 @@ def main():
 		#Create and Train Model
 		rf = mp.rf_model()
 		mlp = mp.mlp_model()
-		
+
 		rf.fit(inputs, ts)
 		mlp.fit(inputs, ts)
 

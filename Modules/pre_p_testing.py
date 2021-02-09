@@ -1,3 +1,14 @@
+"""
+File: pre_p_testing.py
+Class: CIS 422
+Date: February 8, 2021
+Team: The Nerd Herd
+Head Programmer: Logan Levitre
+Version 1.1.0
+
+Overview: Testing for preprocessing module
+"""
+
 import preprocessing as prep
 
 if __name__ == '__main__':
