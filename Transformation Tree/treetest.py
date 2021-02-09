@@ -3,9 +3,12 @@ File: treetest.py
 Class: CIS 422
 Date: January 23, 2020
 Team: The Nerd Herd
-Head Programmers: Callista West, Zeke Petersen
+Head Programmers: Zeke Petersen, Callista West
 Version 0.1.1
 Testing of tree.py, node.py, and save_load.py
+
+To run the test script, run "python ./treetest.py". There should be no errors if
+all functions being tested are working and all packages have been installed.
 """
 
 from tree import Tree
@@ -57,6 +60,53 @@ def test_replicate_path():
     assert len(rep.root.children) == 1
     assert rep.root.children[0].children[0].op == "rf"
 
+def test_replicate_subtree():
+    print("Begin test_replicate_subtree\n")
+    tree_test = Tree()
+
+    tree_test.add_prep_node([], "denoise", None, None, None)
+    tree_test.add_split_node(["denoise"], "ts2db")
+    tree_test.add_visualize_node(["denoise"], "box_plot")
+    tree_test.add_model_node(["denoise", "ts2db"], "rf")
+    tree_test.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
+
+    rep = tree_test.replicate_subtree(["denoise", "ts2db", "rf"])
+
+    assert rep.root.op == "rf"
+    assert rep.root.children[0].op == "MSE"
+
+def test_add_subtree():
+    print("Begin test_add_subtree\n")
+    tree_test = Tree()
+    tree_test.add_prep_node([], "denoise", None, None, None)
+    tree_test.add_split_node(["denoise"], "ts2db")
+
+    tree_add = Tree()
+    tree_add.add_model_node([], "rf")
+    tree_add.add_eval_node(["rf"], "MSE")
+
+    tree_test.add_subtree(["denoise", "ts2db"], tree_add)
+
+    assert tree_test.root.op == "denoise"
+    assert tree_test.root.children[0].op == "ts2db"
+    assert tree_test.root.children[0].children[0].op == "rf"
+    assert tree_test.root.children[0].children[0].children[0].op == "MSE"
+
+
+def test_replace_operator():
+    print("Begin test_replace_operator\n")
+    tree_test = Tree()
+
+    tree_test.add_prep_node([], "denoise", None, None, None)
+    tree_test.add_split_node(["denoise"], "ts2db")
+    tree_test.add_visualize_node(["denoise"], "box_plot")
+    tree_test.add_model_node(["denoise", "ts2db"], "rf")
+    tree_test.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
+
+    tree_test.replace_operator(["denoise", "ts2db", "rf"], "mlp")
+
+    assert treetest.root.children[0].children[0].op == "mlp"
+
 def test_load_save():
     print("Begin test_load_save\n")
     tree_test = Tree()
@@ -67,7 +117,6 @@ def test_load_save():
     tree_test.add_model_node(["denoise", "ts2db"], "rf")
     tree_test.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
     SL.save_tree(tree_test, "testingtree")
-    # tree_loaded = SL.load_tree(tree_test, "testingtree")
     tree_loaded = SL.load_tree("testingtree")
     assert tree_loaded.root.op == "denoise"
     assert tree_loaded.root.children[0].op == "ts2db"
@@ -81,45 +130,12 @@ def main():
     test_basics()
     test_all_node_types()
     test_replicate_path()
+    test_replicate_subtree()
+    test_add_subtree()
+    test_replace_operator()
     test_load_save()
     print("---------- All tests passed ----------\n")
 
 
 if __name__ == '__main__':
     main()
-
-    """
-    root = nodefile.add_root("read_from_file")
-    #root = Node("root")
-
-    prep = Node("preprocessing")
-    root.child.append(prep)
-    denoise = Node("denoise")
-    prep.folder.append(denoise)
-    missing_data = Node("impute_missing_data")
-    prep.folder.append(missing_data)
-    clip = Node("clip")
-    mlp = Node("mlp_model")
-    rf = Node("rf_model")
-    prep.child.append(mlp)
-    prep.child.append(rf)
-    visual = Node("visualization")
-    visual2 = Node("visualization 2")
-    mlp.child.append(visual)
-    rf.child.append(visual2)
-
-    print("Level order traversal with new nodes added\n")
-    test_print = tree1.printNode(root)
-
-    test_replace = nodefile.replace(prep, denoise, clip)
-
-    test_replicate_ST = tree1.replicate_subtree(root, rf)
-
-    test_add_ST = tree1.add_subtree(root, mlp, visual2)
-
-    test_add_node = nodefile.add_node(root, mlp, "new_visual")
-
-    #print_path(root, mlp)
-
-    test_print2 = tree1.printNode(root)
-    """
