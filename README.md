@@ -132,7 +132,7 @@ following the last node in the list (which will be the root of the new tree).
 
 To append one tree to another, invoke the add_subtree method:
 
-> add_subtree(["denoise", "ts2db", "rf"], my_subtree)
+> my_tree.add_subtree(["denoise", "ts2db", "rf"], my_subtree)
 
 This will append the root of the subtree as a child to the node of the main tree
 specified by the first argument. It will also copy the rest of the contents of
@@ -142,7 +142,15 @@ Keep in mind that this method will also enforce the ordering described by normal
 node additions described above.
 
 ### **Execute a tree or pipeline**
-TODO
+
+To execute a tree, invoke the execute_tree method:
+
+> my_tree.execute_tree("my_csv.csv")
+
+This will check to make sure a prepNode is the root (as this was not
+enforced while constructing the tree). It will output forecast csv files, but
+will also output any plots or evaluations if the nodes for those steps are
+present.
 
 ### **Save or load a Transformation Tree**
 

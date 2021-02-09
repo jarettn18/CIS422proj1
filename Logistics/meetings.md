@@ -99,7 +99,7 @@ can redirect their efforts
 presentation efforts on team organization and a demo.
 
 ### 2/4/2021 - Weekly team meeting
----------------------------
+----------------------------------
 6:00pm-6:15pm (Zeke, Jack, Logan, Callista)
 * (For tomorrow's presentation) Zeke and Logan have created a short presentation
 slideshow and will talk about team organization and system structure.
@@ -110,3 +110,13 @@ Jarett will give a short demo showing what we have.
 * Once the presentation is done, we will check in and get a time sharing system of
 sorts working for who can work on tree.py since most of the remaining code will be
 in that file. We will also assign out cleanup and the last function duties this weekend.
+
+### 2/7/2021 - Weekend meeting
+------------------------------
+2:00pm-2:20pm (all members present)
+* Zeke will adjust node and tree classes to reflect Jarett's updates to ts2db
+* Zeke will pass off to Logan for the replicate and add tree/path functions
+* Callista will finish loading/saving with pickles
+* Once Logan is done, he will pass off to either Jarett or Jack for the execute and
+or replace operator functions respectively
+* Jarett will also assist in checking that work has been done right from our original modules
