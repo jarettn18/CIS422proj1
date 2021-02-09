@@ -223,6 +223,11 @@ class Tree:
         pass
 
     def replicate_subtree(self, op_list):
+        """
+        Creates an identical subtree
+        :param op_list: list of function operator strings, represent real functions
+        :return: a Tree obj that is a copy of another subtree
+        """
         if self.root is not None:
             # finding the node from op_list
             new_root = self._find_node(op_list)
@@ -230,40 +235,45 @@ class Tree:
             if new_root is not None:
                 # create new tree obj
                 new_tree = Tree()
+                # deep copy node
                 deep_copy = copy.deepcopy(new_root)
+                # add node to new tree
                 new_tree._add_node(op_list, deep_copy)
                 return new_tree
             else:
                 raise Exception("Error cannot replicate subtree")
 
-    # def replicate_path(self, op_list)
 
-    # May be trickier since you would have to create new nodes and add them as you find them
-    # to the new tree since you only want the ops and optional arguments, not all the children
-    # that each node may have had in the original tree
     def replicate_path(self, op_list):
+        """
+        creates a new tree that consists of a path of another tree
+        :param op_list: list of function operator strings, represent real functions
+        :return: a new Tree object consisting of a path in another tree
+        """
         # create new Tree for path
         new_path = Tree()
         # op_list: list of function operator strings, represent real functions
         # loop through list to get individual nodes one by one\
-        for idx in op_list:
+        for idx in range(len(op_list)):
             # check if node at idx in list is in original tree
-            found_node = self._find_node(op_list)
+            found_node = self._find_node(op_list[:idx+1])
             if found_node is not None:
                 # if in tree, create new node
                 deep_copy = copy.deepcopy(found_node)
                 # reset children to nothing
                 deep_copy.children = []
                 # add node to tree
-                new_path._add_node(op_list, deep_copy)
+                new_path._add_node(op_list[:idx], deep_copy)
         return new_path
 
 
-    # def add_subtree(self, op_list, subtree)
-
-    # I would think one could just find the node, make a deepcopy of the root node of
-    # the tree to be added, and then append the copied node to the found node's children
     def add_subtree(self, op_list, subtree):
+        """
+        Adds a subtree to a node
+        :param op_list: list of function operator strings, represent real functions
+        :param subtree: part of a tree to be added onto a node
+        :return: original tree with updated children of specified node
+        """
         # find the node
         if self.root is not None:
             found_node = self._find_node(op_list)
