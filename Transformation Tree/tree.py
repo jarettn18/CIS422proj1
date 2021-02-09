@@ -16,7 +16,7 @@ from node import splitNode
 from node import modelNode
 from node import visualizeNode
 from node import evalNode
-
+import copy
 # Splits section likely to change later
 OPS = {
        "preps": ["denoise", "impute_missing_data", "impute_outliers",
@@ -230,7 +230,7 @@ class Tree:
             if new_root is not None:
                 # create new tree obj
                 new_tree = Tree()
-                deep_copy = deepcopy(new_root)
+                deep_copy = copy.deepcopy(new_root)
                 new_tree._add_node(op_list, deep_copy)
                 return new_tree
             else:
@@ -242,24 +242,22 @@ class Tree:
     # to the new tree since you only want the ops and optional arguments, not all the children
     # that each node may have had in the original tree
     def replicate_path(self, op_list):
-
-        # split op list
-        split_ops = op_list.split()
-        # create new tree
+        # create new Tree for path
         new_path = Tree()
-        # loop through list to get individual nodes one by one
-        # deep copy each node
+        # op_list: list of function operator strings, represent real functions
+        # loop through list to get individual nodes one by one\
         for idx in op_list:
-            # check if node is in original tree
-            found_node = self._find_node(split_ops[0])
+            # check if node at idx in list is in original tree
+            found_node = self._find_node(op_list)
             if found_node is not None:
-            # create new node
-            deep_copy = deepcopy(found_node)
-            # add node to tree with children of that node
-            new_path._add_node(split_ops, deep_copy)
-            # pop recently inserted node op from list
-            split_ops.pop()
-        return new_tree
+                # if in tree, create new node
+                deep_copy = copy.deepcopy(found_node)
+                # reset children to nothing
+                deep_copy.children = []
+                # add node to tree
+                new_path._add_node(op_list, deep_copy)
+        return new_path
+
 
     # def add_subtree(self, op_list, subtree)
 
@@ -271,26 +269,25 @@ class Tree:
             found_node = self._find_node(op_list)
             if found_node is not None:
                 # create deep copy of root node of subtree
-                deep_copy = deepcopy(subtree.root)
+                deep_copy = copy.deepcopy(subtree.root)
                 # append copied node to the found nodes children
                 found_node.children.append(deep_copy)
             else:
                 raise Exception("Unable to add subtree")
 
 
-
     def replace_operator(self, op_list, node):
-		#Find Node in Op Liust
-		for i in range(len(op_list)):
-			# Node found
+	    # Find Node in Op Liust
+	    for i in range(len(op_list)):
+		    # Node found
 		    if node.op == op_list[i].op:
-			 	#Reassign Pointers
-				node.parent = op_list[i].parent
-				node.children = op_list[i].children
-				for j in range(len(op_list[i].children)):
-					op_list[i].children[j].parent = node
-				#Remove node from tree
-				op_list[i] = node
+			    #Reassign Pointers
+			    node.parent = op_list[i].parent
+			    node.children = op_list[i].children
+			    for j in range(len(op_list[i].children)):
+			        op_list[i].children[j].parent = node
+			    # Remove node from tree
+			    op_list[i] = node
 
 
 # END TREE DEFINITION --------------------------
@@ -298,40 +295,6 @@ class Tree:
 # Below here are functions that may need to be modified and moved
 # to the Tree class -- these were original ideas for how to implement tree functions
 #-----------------------------------------------------------------------------------
-
-def replicate_subtree(self, root_node):
-    """
-    Replicating a Subtree and printing it using printNode
-    : param self: binding arguments with class Node
-            root_node: the root of the subtree wishing to be replicated
-    : return: returns the root of the newly replicated subtree
-    """
-    print("This is the new root of a new subtree: " + root_node.key)
-    now_root = Node(root_node.key)
-    for index, value in enumerate(root_node.child):
-        now_root.child.append(value)
-        #print(value.key)
-    #now_root.child = root_node.child
-    printNode(now_root)
-    return(now_root)
-
-def add_subtree(self, tree_root, new_node):
-    """
-    Function takes the root of the subtree and adds it and the subtree to a new
-        node to continue to length and layers of the original tree
-        This function calls replicate_subtree()
-    :param self: binding arguments with class Node
-           tree_root: root of the subtree wanting to be replicated and added to a
-               new node
-           new_node: the node in which the subtree will be added to
-    :return: returns none
-    """
-    #need to check that subtree can be added into an appropriate place
-    #   in the tree
-    holder = replicate_subtree(self, tree_root)
-    new_node.child.append(holder)
-    printNode(self)
-    return None
 
 def save_tree(root):
     pass
