@@ -37,9 +37,19 @@ In order to run the software, Python 3.8 or later must be installed. Installers
 can be found at python.org/downloads. To check that Python successfully installed,
 enter "python --version" at the command line or terminal.
 
+Note: For some operating systems, Python 2 may remain the default even after installation
+of Python 3. If that is the case, it may be necessary to alias 'python' to 'python3'
+in your terminal profile or establish a virtual environment via pyenv:
+https://github.com/pyenv/pyenv
+
+In either case, the end result of calling "python --version" should be:
+> Python 3.x.x
+
 Pip should come preinstalled with Python and it will be needed to install the
-software dependencies. To check that Python successfully installed,
-enter "pip --version" at the command line or terminal.
+software dependencies. To check that pip successfully installed,
+enter "python -m pip --version" at the command line or terminal.
+
+Once confirmed, run "python -m pip install -U pip" to ensure pip is upgraded.
 
 * pip is used to install dependencies via the command "pip install \<dependency\>"
 where each of the following will be substituted for \<dependency\> one at a time
@@ -47,11 +57,10 @@ where each of the following will be substituted for \<dependency\> one at a time
 terminal).
     * scikit-learn
     * pandas
-    * numpy
+    * numpy         (may already be installed as previous package dependency)
     * pyjanitor
-    * seaborn
-    * matplotlib
-    * cpickle
+    * seaborn       (may already be installed as previous package dependency)
+    * matplotlib    (may already be installed as previous package dependency)
     * statsmodels
 
 ### User Guide
