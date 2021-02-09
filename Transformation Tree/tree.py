@@ -3,7 +3,7 @@ File: tree.py
 Class: CIS 422
 Date: January 20, 2021
 Team: The Nerd Herd
-Head Programmers: Callista West, Zeke Petersen, Jack Sanders
+Head Programmers: Callista West, Zeke Petersen, Jack Sanders, Jarett Nishijo
 Version 0.1.0
 
 Basic Tree implementation
@@ -275,19 +275,26 @@ class Tree:
             else:
                 raise Exception("Unable to add subtree")
 
-
     def replace_operator(self, op_list, node):
 	    # Find Node in Op Liust
-	    for i in range(len(op_list)):
-		    # Node found
-		    if node.op == op_list[i].op:
-			    #Reassign Pointers
-			    node.parent = op_list[i].parent
-			    node.children = op_list[i].children
-			    for j in range(len(op_list[i].children)):
-			        op_list[i].children[j].parent = node
-			    # Remove node from tree
-			    op_list[i] = node
+        dict_list = list(OPS.values())
+        val_list = None
+        node_to_find = None
+        for i in range(len(dict_list)):
+            for j in range(len(dict_list[i])):
+                if (node == dict_list[i][j]):
+                    val_list = dict_list[i]
+                    break
+        if val_list is None:
+			raise Exception("Node not found in OP dictionary")
+        for i in range(len(val_list)):
+            if val_list[i] == op_list[len(op_list) - 1]:
+                    node_to_find = val_list[i]
+                    break
+        if node_to_find is None:
+		    raise Exception("Replacement Node is not of same type as Node to be replaced")
+        node = self._find_node(op_list)
+		node.op = node
 
 
 # END TREE DEFINITION --------------------------
