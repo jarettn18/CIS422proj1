@@ -6,7 +6,8 @@ Team: The Nerd Herd
 Head Programmer: Logan Levitre
 Version 1.1.0
 
-Overview: Preprocessing functions to be used with Time Series Data.
+Overview: This Preprocessing library consists of functions to be used with Time Series Data
+inside .CSV files
 """
 import pandas as pd
 from math import pow, log10
@@ -18,7 +19,7 @@ import janitor as pyj
 
 def read_from_file(input_file):
     """
-    Function reads TimeSeries csv file and stores data
+    Reads TimeSeries CSV file and stores data
     as a DataFrame object
     :param input_file: file passed to function containing Time Series Data
     :return: returns DataFrame object declared time_series
@@ -29,7 +30,7 @@ def read_from_file(input_file):
 
 def write_to_file(output_file, ts):
     """
-    Takes Series and outputs the data into the output_file
+    Takes Time Series and outputs the data into the output_file
     :param output_file: file to store data in
     :param ts: time_series to be stored
     :return: None
@@ -39,8 +40,8 @@ def write_to_file(output_file, ts):
 
 def denoise(time_series):
     """
-    Removes noise from a time series. Produces a time series with less noise than
-    the original one.
+    Removes noise from a time series - Produces a time series with less noise than
+    the original copy
     :param time_series: Time series data
     :return: returns a new Time Series with less noise
     """
@@ -51,17 +52,17 @@ def denoise(time_series):
 
 def impute_missing_data(time_series):
     """
-    Corrects missing data entries inside time_series
-    takes value to the right and uses that as placeholder
-    for the data missing - if multiple entries are missing - skip
+    Finds and replaces missing data entries inside Time Series.
     :param time_series: Time series data
     :return: time series with filled in missing values
     """
-    # Possibly use .shape - Return a tuple representing the dimensionality of the DataFrame.
+    # makes a copy of Time Series
     restored_series = time_series.copy()
+    # finds column containing Data
     data_col = time_series.columns[len(restored_series.columns) - 1]
+    # replaces entries of 0 in data column with average value of all data
     restored_series[data_col].replace(0, restored_series[data_col].mean().round(5), inplace=True)
-    # find NaN and fill with data to the right of it
+    # find NaN and fill with data
     restored_series = restored_series.fillna(method='ffill')
     return restored_series
 
@@ -113,14 +114,24 @@ def longest_continuous_run(time_series):
         last_idx = 1
         #    # loop through array getting difference of consecutive values
         for idx in range(0, len(lr_index)):
+            # if last value in column 
             if idx == (len(lr_index) - 1):
+                # check if difference from last index to end of column 
+                # is bigger or smaller
                 if len(longest.index) - lr_index[idx] > diff:
+                    # if bigger then set difference as that
                     diff = len(longest.index) - lr_index[idx]
+                    # set starting index as last entry
                     first_idx = lr_index[idx] + 1
+                    # set last index as end of column
                     last_idx = (len(longest) - 1)
+            # if not last value in column
             elif lr_index[idx + 1] - lr_index[idx] > diff:
+                # set difference
                 diff = lr_index[idx + 1] - lr_index[idx]
+                # set first index
                 first_idx = lr_index[idx]
+                # set last index
                 last_idx = lr_index[idx + 1]
         # get start/stop times from TS at indexed locations
         # create new DataFrame of sliced portion
@@ -131,19 +142,20 @@ def longest_continuous_run(time_series):
 
 def clip(time_series, starting_date, final_date) -> object:
     """
-    clips the time series to the specified period’s data.
+    Clips the Time Series from Starting date to End date 
     :param time_series: Time series data
     :param starting_date: first day to be included in new TS
     :param final_date: last date to be included in  new TS
     :return: a portion of the time series from start_date to final_date
     """
-    # copy ts into new obj
-    # get csv name for column with dates
+
+    # get Dates Column 
     dates = time_series.columns[0]
+    # copy Time Series to new object 
     clipped = time_series.copy()
-    # call filter_date function to get dates/values
+    # call filter_date function to get dates/values 
     filtered = clipped.filter_date(dates, starting_date, final_date)
-    # return time frame
+    # return filtered Time Series
     return filtered
 
 
@@ -156,21 +168,30 @@ def assign_time(time_series, start, increment):
     :param increment: difference to add to next timestamp
     :return: a new time_series with timestamps assigned to each entry
     """
+    # get column containing data
     data_col = time_series.columns[len(time_series.columns) - 1]
+    # create a new Time series with pre-made Date/Time columns
     new_ts = pd.DataFrame(columns=['Timestamp: Hour:', 'Data'])
+    # iterate through entries
     for x in time_series.index:
+        # insert Data entries into new Time series
         new_ts.loc[x] = time_series.at[x, data_col]
 
-    column_list = new_ts.columns[0]
+    # get Date column 
+    date_column = new_ts.columns[0]
     # MM/DD/YYYY - get each segment of input to create datetime obj
     date_splice = start.split(sep="/")
+    # get year
     date_year = int(date_splice[2])
+    # get month
     date_month = int(date_splice[0])
+    # get day 
     date_day = int(date_splice[1])
+    # create datetime object
     date = dt.datetime(date_year, date_month, date_day)
     # insert time into DataFrame
     for idx in new_ts.index:
-        new_ts.at[idx, column_list] = date
+        new_ts.at[idx, date_column] = date
         date += dt.timedelta(hours=increment)
 
     return new_ts
@@ -207,17 +228,27 @@ def scaling(time_series):
     :param time_series: Time series data
     :return: a new time series with magnitudes between 0 - 1
     """
+    # create copy of Time Series, prevents any alteration 
+    # of original Time Series
     normalized_ts = time_series.copy()
+    # get Data column header
     data_col = time_series.columns[len(time_series.columns) - 1]
+    # create array of data from Time Series
     data = [x for x in normalized_ts[data_col]]
+    # create new DataFrame object
     new_data = pd.DataFrame(data, columns=[data_col])
 
+    # initialize sklearns Scaler
     scalar = MinMaxScaler()
+    # create array of scaled data
     normalized_ts_new = (scalar.fit_transform(new_data))
 
+    # loop through Time Series 
     for idx in range(len(normalized_ts)):
+        # if end of column 
         if idx == len(normalized_ts):
             break
+        # Reassign value as scaled value 
         normalized_ts[data_col].values[idx] = normalized_ts_new[idx]
     return normalized_ts
 
@@ -228,10 +259,16 @@ def standardize(time_series):
     :param time_series: Time series data
     :return: a Time series with mean of 0/variance is 1
     """
+    # create copy of Time Series, prevents any alteration 
+    # of original Time Series 
     standard_ts = time_series.copy()
+    # get Data column header 
     data_col = time_series.columns[len(time_series.columns) - 1]
+    # set variables a,b for standardizing equation 
     a, b = 10, 50
+    # set x,y as min/max
     x, y = standard_ts[data_col].min(), standard_ts[data_col].max()
+    # standardize data 
     standard_ts[data_col] = (standard_ts[data_col] - x) / (y - x) * (b - a)
     return standard_ts
 
@@ -244,10 +281,12 @@ def logarithm(time_series):
     :return: returns scaled time series containing log_10 results of generates
      a version of previous values
     """
+    # create copy of Time Series, prevents any alteration 
+    # of original Time Series 
     log_10_time_series = time_series.copy()
-    # get column name containing data
+    # get Data column header
     data_col = time_series.columns[len(log_10_time_series.columns) - 1]
-    # loop through rows of TS
+    # loop through rows of Time Series
     for idx in log_10_time_series.index:
         # go through each row of last column - assign cubed root of value at each
         # index of the column
@@ -263,8 +302,10 @@ def cubic_roots(time_series):
     :return: a new time series with entries being
             the cubic root of previous values
     """
+    # create copy of Time Series, prevents any alteration 
+    # of original Time Series
     cubed_time_series = time_series.copy()
-    # get column name containing data
+    # get Data column header 
     data_col = time_series.columns[len(cubed_time_series.columns) - 1]
     # loop through rows of TS
     for idx in cubed_time_series.index:
@@ -282,8 +323,9 @@ def split_data(time_series, perc_training=50, perc_test=50):
     :param perc_training: percentage of time series data to be used for training
     :param perc_test: percentage of time series data to be used for testing
     :return train_ts: Return the Training Time Series
-	:return test_ts: Return the Testing Time series
+    :return test_ts: Return the Testing Time series
     """
+
     # Create error handling for if percentages are of same val for equal comparison
     if perc_training + perc_test == 100:
         # Get length of ts
@@ -293,15 +335,16 @@ def split_data(time_series, perc_training=50, perc_test=50):
         # get percentage val to be training
         test_training = (perc_training / 100)
         # size of training Data
-        t_p_l = int((ts_size * test_perc))
+        test_training_size = int((ts_size * test_perc))
         # size of training Data
         t_t_l = int((ts_size * test_training))
-        print(t_p_l)
+        # print sizes to terminal
+        print(test_training_size)
         print(t_t_l)
         # cut TS based on percentage for Training
-        train_ts = time_series[0:t_p_l]
+        train_ts = time_series[0:test_training_size]
         # cut TS based on percentage for Testing
-        test_ts = time_series[t_p_l:]
+        test_ts = time_series[test_training_size:]
 
         return train_ts, test_ts
     else:
@@ -314,7 +357,6 @@ def design_matrix(time_series, prev_index):
     Creates a matrix of time series data
     while adding to input/output index
     :param time_series: Time series data
-    #:param input_index: indices of training data for error
     :param prev_index: forecasted index for error testing
     :return: a numpy Matrix data
     """
@@ -382,7 +424,7 @@ def design__matrix(time_series, m_i, t_i, m_O, t_O):
             outputs.append(x)
     # inputs now has array of indexes spaced apart t_i
     # outputs now has array of indexes spaced apart t_O
-    matrix = design_matrix(ts_train, inputs, outputs)
+    matrix = design_matrix(ts_train, inputs)
     # num of output indexes to take
     # take the values of input/output index and create matrix to return
     return matrix
@@ -390,9 +432,9 @@ def design__matrix(time_series, m_i, t_i, m_O, t_O):
 
 def ts2db(input_file_train, input_file_test=None):
     """
-    Converts time series into a data base
+    Converts time series into a database i.e matrix
     :param input_file_train: Training file to be read (and split if necessary)
-	:param input_file_test: Testing file to be read
+    :param input_file_test: Testing file to be read
     :return train_ts: Training Time Series for Validation
     :return train_inputs: Input Time Series for Training
     :return test_ts: Test Time Series for Forecast Accuracy
