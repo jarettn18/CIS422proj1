@@ -90,10 +90,15 @@ class modelNode(Node):
         This function will help execute the tree
         """
         if self.op == "mlp":
-            pass
+            model = mod.mlp_model()
+            model.fit(self.inputs, self.ts)
+            forecast = model.forecast(inputs_test)
+            return forecast
         elif self.op == "rf":
-            pass
-
+            model = mod.rf_model()
+            model.fit(self.inputs, self.ts)
+            forecast = model.forecast(inputs_test)
+            return forecast
 
 class splitNode(Node):
 
