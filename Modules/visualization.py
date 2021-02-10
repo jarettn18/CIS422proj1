@@ -44,14 +44,14 @@ from numpy import percentile
 # In[288]:
 
 
-def csv_to_ts(csv, y):
+def csv_to_ts(csv):
     """
     .csv: matrix, y: y-axis/title -> dataframe w/ two columns
 
     TODO: find function other than assign to pass y in as unique title
     TODO: provide more customizability for periods
     """
-    series = read_csv(csv, names=["Series_old"])
+    series = csv#read_csv(csv, names=["Series_old"])
     time = pd.date_range(start=pd.datetime(2000,1,1),periods=len(series))
     time_series = series.assign(Time = time)
     time_series = time_series.assign(Series = time_series['Series_old'])

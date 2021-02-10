@@ -89,12 +89,12 @@ class modelNode(Node):
         """
         This function will help execute the tree
         """
-        if self.op == "mlp":
+        if op_exec == "mlp":
             model = mod.mlp_model()
             model.fit(self.inputs, self.ts)
             forecast = model.forecast(inputs_test)
             return forecast
-        elif self.op == "rf":
+        elif op_exec == "rf":
             model = mod.rf_model()
             model.fit(self.inputs, self.ts)
             forecast = model.forecast(inputs_test)
@@ -107,13 +107,15 @@ class splitNode(Node):
         self.file_name = None  # Filled in during execution
         self.file_name_test = None
 
-    def execute():
+    def execute(input_train, input_file, op_exec):
         """
         This function will help execute the tree
         """
-        if self.op == "ts2db":
-            return prep.ts2db(self.file_name, self.file_name_test)
-
+        # if self.op == "ts2db":
+        #     return prep.ts2db(self.file_name, self.file_name_test)
+        if op_exec == "ts2db":
+            # print(prep.ts2db(input_file, None))
+            return prep.ts2db(input_train, input_file)
 
 class visualizeNode(Node):
 
@@ -129,7 +131,7 @@ class visualizeNode(Node):
         # data_op = prep.read_from_file(input_file)
         # ts = prep.impute_missing_data(data_op)
 
-        ts = viz.csv_to_ts(input_file, 'Temperature')
+        ts = viz.csv_to_ts(input_file)
 
         return_value = None
         if op_exec == "plot":

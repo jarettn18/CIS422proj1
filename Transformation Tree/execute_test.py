@@ -127,35 +127,17 @@ def test_execute_tree():
     print("Begin test_execute_tree\n")
     tree_test = Tree()
 
-    print(tree_test)
-
     tree_test.add_prep_node([], "denoise", None, None, None)
     tree_test.add_split_node(["denoise"], "ts2db")
     tree_test.add_visualize_node(["denoise"], "box_plot")
     tree_test.add_model_node(["denoise", "ts2db"], "rf")
     tree_test.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
-    SL.save_tree(tree_test, "testingtree")
-    tree_loaded = SL.load_tree("testingtree")
     
     print(tree_test.execute_tree())
-    # print(tree_loaded.root.children[0].op)
-    # assert tree_loaded.root.op == "denoise"
-    # assert tree_loaded.root.children[0].op == "ts2db"
-    # assert tree_loaded.root.children[1].op == "box_plot"
-    # assert tree_loaded.root.children[0].children[0].op == "rf"
-    # assert tree_loaded.root.children[0].children[0].children[0].op == "MSE"
-
 
 def main():
     print("----------- Begin testing ------------\n")
-    # test_basics()
-    # test_all_node_types()
-    # test_replicate_path()
-    # test_replicate_subtree()
-    # test_add_subtree()
-    # test_replace_operator()
-    # test_load_save()
-    print(test_execute_tree())
+    test_execute_tree()
 
     print("---------- All tests passed ----------\n")
 

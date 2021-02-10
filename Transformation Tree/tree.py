@@ -223,7 +223,9 @@ class Tree:
         
     def execute_tree(infile):
 
-        input_file = '../TestData/missing_data_test.csv'
+        # input_file = '../TestData/missing_data_test.csv'
+        input_file = '../TestData/4_irradiance_test.csv'
+        input_train = '../TestData/4_irradiance_train.csv'
 
         root = infile.root
         if root is None:
@@ -247,10 +249,16 @@ class Tree:
 
                 print(p.op)
                 if p.op in OPS["preps"]:
-                    prepNode.execute(input_file, p.op)
+                    time_series = prepNode.execute(input_file, p.op)
                 elif p.op in OPS["splits"]:
-                    # splitNode.execute(input_file, p.op)
-                    pass
+                    forecast = splitNode.execute(input_train, input_file, p.op)
+                    print(forecast)
+                    # split = splitNode.execute(input_file, p.op)
+                    # train_ts = split[0]
+                    # train_inputs = split[1]
+                    # test_ts = split[2]
+                    # test_inputs = split[3]
+                    # print("train_ts:\n", train_ts, "\ntrain_inputs:\n", train_inputs, "\ntest_ts:\n", test_ts, "\ntest_inputs:\n", test_inputs)
                 elif p.op in OPS["models"]:
                     # modelNode.execute(input_file, p.op)
                     pass
@@ -258,7 +266,8 @@ class Tree:
                     # evalNode.execute(input_file, p.op)
                     pass
                 elif p.op in OPS["visualizes"]:
-                    visualizeNode.execute(input_file, p.op)
+                    pass
+                    # visualizeNode.execute(input_file, p.op)
                 # Enqueue all of the children of the dequeued node
                 for index, value in enumerate(p.children):
                     #for index, value in enumerate(p.folder):
