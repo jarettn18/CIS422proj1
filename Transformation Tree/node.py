@@ -43,33 +43,38 @@ class prepNode(Node):
         self.final_date = final_date
         self.increment = increment
 
-    def execute(self):
+    def execute(training, op_exec):
         """
         This function will help execute the tree
         """
-        if self.op == "denoise":
-            self.ts = prep.denoise(self.ts)
-        elif self.op == "impute_missing_data":
-            prep.impute_missing_data(self.ts)
-        elif self.op == "impute_outliers":
-            prep.impute_outliers(self.ts)
-        elif self.op == "longest_continuous_run":
-            prep.longest_continuous_run(self.ts)
-        elif self.op == "clip":
-            self.ts = pre.denoise(self.ts, self.starting_date, self.starting_date, self.final_date)
-        elif self.op == "assign_time":
-            prep.assign_time(self.ts, self.starting_date, self.increment)
-        elif self.op == "difference":
-            prep.difference(self.ts)
-        elif self.op == "scaling":
-            prep.scaling(self.ts)
-        elif self.op == "standardize":
-            prep.standardize(self.ts)
-        elif self.op == "logarithm":
-            prep.logarithm(self.ts)
-        elif self.op == "cubic_roots":
-            prep.cubic_roots(self.ts)
-        return self.ts
+        data_op = prep.read_from_file(training)
+        print(data_op)
+        ts = prep.impute_missing_data(data_op)
+
+        return_value = None
+        if op_exec == "denoise":
+            return_value = prep.impute_missing_data(ts)
+        elif op_exec == "impute_missing_data":
+            return_value = prep.impute_missing_data(ts)
+        elif op_exec == "impute_outliers":
+            return_value = prep.impute_outliers(ts)
+        elif op_exec == "longest_continuous_run":
+            return_value = prep.longest_continuous_run(self.ts)
+        elif op_exec == "clip":
+            return_value = pre.denoise(ts, self.starting_date, self.starting_date, self.final_date)
+        elif op_exec == "assign_time":
+            return_value = prep.assign_time(ts, self.starting_date, self.increment)
+        elif op_exec == "difference":
+            return_value = prep.difference(ts)
+        elif op_exec == "scaling":
+            return_value = prep.scaling(ts)
+        elif op_exec == "standardize":
+            return_value = prep.standardize(ts)
+        elif op_exec == "logarithm":
+            return_value = prep.logarithm(ts)
+        elif op_exec == "cubic_roots":
+            return_value = prep.cubic_roots(ts)
+        return return_value
 
 class modelNode(Node):
 
@@ -80,7 +85,7 @@ class modelNode(Node):
         self.ts_test = None
         self.inputs_test = None
 
-    def execute():
+    def execute(time_series, op_exec):
         """
         This function will help execute the tree
         """
@@ -111,28 +116,33 @@ class visualizeNode(Node):
         super().__init__(op, None)
         self.ts = None
 
-    def execute():
+    def execute(input_file, op_exec):
         # pass
         """
         This function will help execute the tree
         """
+        # data_op = prep.read_from_file(input_file)
+        # ts = prep.impute_missing_data(data_op)
+
+        ts = viz.csv_to_ts(input_file, 'Temperature')
+
         return_value = None
-        if self.op == "plot":
-            viz.plot(self.ts)
-        elif self.op == "histogram":
-            viz.histogram(self.ts)
-        elif self.op == "summary":
-            return_value = viz.summary(self.ts)
-        elif self.op == "box_plot":
-            viz.box_plot(self.ts)
-        elif self.op == "shapiro_wilk":
-            return_value = viz.shapiro_wilk(self.ts)
-        elif self.op == "d_agostino":
-            return_value = viz.d_agostino(self.ts)
-        elif self.op == "anderson_darling":
-            return_value = viz.anderson_darling(self.ts)
-        elif self.op == "qq_plot":
-            viz.qq_plot(self.ts)
+        if op_exec == "plot":
+            return_value = viz.plot(ts)
+        elif op_exec == "histogram":
+            return_value = viz.histogram(ts)
+        elif op_exec == "summary":
+            return_value = viz.summary(ts)
+        elif op_exec == "box_plot":
+            return_value = viz.box_plot(ts)
+        elif op_exec == "shapiro_wilk":
+            return_value = viz.shapiro_wilk(ts)
+        elif op_exec == "d_agostino":
+            return_value = viz.d_agostino(ts)
+        elif op_exec == "anderson_darling":
+            return_value = viz.anderson_darling(ts)
+        elif op_exec == "qq_plot":
+            return_value = viz.qq_plot(ts)
         return return_value
 
 class evalNode(Node):

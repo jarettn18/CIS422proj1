@@ -61,7 +61,7 @@ def impute_missing_data(time_series):
     # finds column containing Data
     data_col = time_series.columns[len(restored_series.columns) - 1]
     # replaces entries of 0 in data column with average value of all data
-    restored_series[data_col].replace(0, restored_series[data_col].mean().round(5), inplace=True)
+    restored_series[data_col].replace(0, restored_series[data_col].mean(), inplace=True)
     # find NaN and fill with data
     restored_series = restored_series.fillna(method='ffill')
     return restored_series

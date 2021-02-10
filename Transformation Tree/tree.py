@@ -16,6 +16,7 @@ from node import splitNode
 from node import modelNode
 from node import visualizeNode
 from node import evalNode
+import pandas as pd
 import copy
 # Splits section likely to change later
 OPS = {
@@ -219,8 +220,56 @@ class Tree:
 
     Can implement the execute functions of each class to simplify this function
     """
+        
     def execute_tree(infile):
-        pass
+
+        input_file = '../TestData/missing_data_test.csv'
+
+        root = infile.root
+        if root is None:
+            return
+
+        # create a queue and enqueue root to it using append
+        queue = []
+        queue.append(root)
+
+        # Carry out level order traversal.
+        # The double while loop is used to make sure that
+        #     each level is printed on a different line
+        print("------------") # extra space in between levels
+        while(len(queue) >0):
+
+            n = len(queue)
+            while(n > 0):
+                # Dequeue an item from the queue and print it
+                p = queue[0]
+                queue.pop(0)
+
+                print(p.op)
+                if p.op in OPS["preps"]:
+                    prepNode.execute(input_file, p.op)
+                elif p.op in OPS["splits"]:
+                    # splitNode.execute(input_file, p.op)
+                    pass
+                elif p.op in OPS["models"]:
+                    # modelNode.execute(input_file, p.op)
+                    pass
+                elif p.op in OPS["evals"]:
+                    # evalNode.execute(input_file, p.op)
+                    pass
+                elif p.op in OPS["visualizes"]:
+                    visualizeNode.execute(input_file, p.op)
+                # Enqueue all of the children of the dequeued node
+                for index, value in enumerate(p.children):
+                    #for index, value in enumerate(p.folder):
+                    queue.append(value)
+
+                n -= 1
+            print("------------") # extra space in between levels
+
+        print(".................end of tree...............\n")
+
+        
 
     def replicate_subtree(self, op_list):
         """
