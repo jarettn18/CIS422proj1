@@ -14,7 +14,7 @@ import preprocessing as prep
 if __name__ == '__main__':
     print("--------Preprocessing Test 1--------")
     print("       ----Reading file-----         ")
-    training = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/missing_data_test.csv"
+    training = "../TestData/missing_data_test.csv"
     data_op = prep.read_from_file(training)
     assert data_op is not None
     # ---------------------
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # ---------------------
     print("--------Preprocessing Test--------")
     print("          -longest_run()-         ")
-    data = prep.read_from_file("/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/missing_data_test.csv")
+    data = prep.read_from_file("../TestData/missing_data_test.csv")
     longest_run = prep.longest_continuous_run(data)
     print(longest_run)
     # ---------------------
@@ -40,8 +40,8 @@ if __name__ == '__main__':
     print("--------Preprocessing Test--------")
     print("         -assign_time()-          ")
     data = prep.read_from_file(
-        "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/8_distribution_subsampled_train.csv")
-    print(data, "\n")
+        "../TestData/8_distribution_subsampled_train.csv")
+    print("Before:\n", data, "\n")
     assigned_time = prep.assign_time(data, "1/10/2019", 1)
     print("With Assigned Time:\n")
     print(assigned_time)
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     print("--------Preprocessing Test--------")
     print("          -difference()-          ")
     test_data = prep.read_from_file(
-        "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/AtmPres2005NovMin.csv")
+        "../TestData/AtmPres2005NovMin.csv")
     difference_ts = prep.difference(test_data)
     print(difference_ts)
     # ---------------------
