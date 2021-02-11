@@ -3,7 +3,7 @@ File: treetest.py
 Class: CIS 422
 Date: January 23, 2020
 Team: The Nerd Herd
-Head Programmers: Zeke Petersen, Callista West
+Head Programmers: Jack Sanders
 Version 0.1.1
 Testing of tree.py, node.py, and save_load.py
 
@@ -25,7 +25,7 @@ def test_execute_tree():
     tree_test.add_visualize_node(["denoise"], "box_plot")
     tree_test.add_model_node(["denoise", "ts2db"], "rf")
     tree_test.add_eval_node(["denoise", "ts2db", "rf"], "MSE")
-    
+
     input_file = '../TestData/4_irradiance_train.csv'
 
     print(tree_test.execute_tree(input_file))
