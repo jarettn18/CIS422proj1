@@ -221,19 +221,18 @@ class Tree:
     Can implement the execute functions of each class to simplify this function
     """
         
-    def execute_tree(infile):
+    def execute_tree(self, infile):
 
-        # input_file = '../TestData/missing_data_test.csv'
-        input_file = '../TestData/4_irradiance_test.csv'
-        input_train = '../TestData/4_irradiance_train.csv'
-
-        root = infile.root
+        root = self.root
         if root is None:
             return
+        if root.op not in OPS["preps"]:
+            raise Exception("Root not PrepNode")
 
         # create a queue and enqueue root to it using append
         queue = []
         queue.append(root)
+        model = None
 
         # Carry out level order traversal.
         # The double while loop is used to make sure that
@@ -249,30 +248,22 @@ class Tree:
 
                 print(p.op)
                 if p.op in OPS["preps"]:
-                    time_series = prepNode.execute(input_file, p.op)
+                    time_series = prepNode.execute(infile, p.op)
+                    print(time_series)
                 elif p.op in OPS["splits"]:
-                    forecast = splitNode.execute(input_train, input_file, p.op)
-                    print(forecast)
-                    # split = splitNode.execute(input_file, p.op)
-                    # train_ts = split[0]
-                    # train_inputs = split[1]
-                    # test_ts = split[2]
-                    # test_inputs = split[3]
-                    # print("train_ts:\n", train_ts, "\ntrain_inputs:\n", train_inputs, "\ntest_ts:\n", test_ts, "\ntest_inputs:\n", test_inputs)
+                    train_ts, train_inputs, test_ts, test_inputs = splitNode.execute(infile, p.op)
                 elif p.op in OPS["models"]:
-                    # modelNode.execute(input_file, p.op)
-                    pass
+                    model = modelNode.execute(train_ts, train_inputs, test_inputs, p.op)
+                    print(model)
                 elif p.op in OPS["evals"]:
-                    # evalNode.execute(input_file, p.op)
-                    pass
+                    eval = evalNode.execute(infile, model, p.op)
+                    print(eval)
                 elif p.op in OPS["visualizes"]:
-                    pass
-                    # visualizeNode.execute(input_file, p.op)
+                    visualize = visualizeNode.execute(infile, p.op)
+                    print(visualize)
                 # Enqueue all of the children of the dequeued node
                 for index, value in enumerate(p.children):
-                    #for index, value in enumerate(p.folder):
                     queue.append(value)
-
                 n -= 1
             print("------------") # extra space in between levels
 

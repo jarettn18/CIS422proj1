@@ -85,19 +85,29 @@ class modelNode(Node):
         self.ts_test = None
         self.inputs_test = None
 
-    def execute(time_series, op_exec):
+    def execute(train_ts, train_inputs, test_inputs, op_exec):
         """
         This function will help execute the tree
         """
+        # if op_exec == "mlp":
+        #     model = mod.mlp_model()
+        #     model.fit(self.inputs, self.ts)
+        #     forecast = model.forecast(inputs_test)
+        #     return forecast
+        # elif op_exec == "rf":
+        #     model = mod.rf_model()
+        #     model.fit(self.inputs, self.ts)
+        #     forecast = model.forecast(inputs_test)
+        #     return forecast
         if op_exec == "mlp":
             model = mod.mlp_model()
-            model.fit(self.inputs, self.ts)
-            forecast = model.forecast(inputs_test)
+            model.fit(train_inputs, train_ts)
+            forecast = model.forecast(test_inputs)
             return forecast
         elif op_exec == "rf":
             model = mod.rf_model()
-            model.fit(self.inputs, self.ts)
-            forecast = model.forecast(inputs_test)
+            model.fit(train_inputs, train_ts)
+            forecast = model.forecast(test_inputs)
             return forecast
 
 class splitNode(Node):
@@ -107,7 +117,7 @@ class splitNode(Node):
         self.file_name = None  # Filled in during execution
         self.file_name_test = None
 
-    def execute(input_train, input_file, op_exec):
+    def execute(input_file, op_exec):
         """
         This function will help execute the tree
         """
@@ -115,7 +125,7 @@ class splitNode(Node):
         #     return prep.ts2db(self.file_name, self.file_name_test)
         if op_exec == "ts2db":
             # print(prep.ts2db(input_file, None))
-            return prep.ts2db(input_train, input_file)
+            return prep.ts2db(input_file)
 
 class visualizeNode(Node):
 
@@ -128,28 +138,28 @@ class visualizeNode(Node):
         """
         This function will help execute the tree
         """
-        # data_op = prep.read_from_file(input_file)
-        # ts = prep.impute_missing_data(data_op)
-
-        ts = viz.csv_to_ts(input_file)
+        # input_file = viz.read_matrix(input_file)
+        input_file = viz.csv_to_ts(input_file)
+        input_file = prep.impute_missing_data(input_file)
+        input_file = prep.impute_outliers(input_file)
 
         return_value = None
         if op_exec == "plot":
-            return_value = viz.plot(ts)
+            return_value = viz.plot(input_file)
         elif op_exec == "histogram":
-            return_value = viz.histogram(ts)
+            return_value = viz.histogram(input_file)
         elif op_exec == "summary":
-            return_value = viz.summary(ts)
+            return_value = viz.summary(input_file)
         elif op_exec == "box_plot":
-            return_value = viz.box_plot(ts)
+            return_value = viz.box_plot(input_file)
         elif op_exec == "shapiro_wilk":
-            return_value = viz.shapiro_wilk(ts)
+            return_value = viz.shapiro_wilk(input_file)
         elif op_exec == "d_agostino":
-            return_value = viz.d_agostino(ts)
+            return_value = viz.d_agostino(input_file)
         elif op_exec == "anderson_darling":
-            return_value = viz.anderson_darling(ts)
+            return_value = viz.anderson_darling(input_file)
         elif op_exec == "qq_plot":
-            return_value = viz.qq_plot(ts)
+            return_value = viz.qq_plot(input_file)
         return return_value
 
 class evalNode(Node):
@@ -159,20 +169,24 @@ class evalNode(Node):
         self.y_test = None
         self.y_forecast = None
 
-    def execute():
+    def execute(input_file, forecast, op_exec):
         # pass
         """
         This function will help execute the tree
         """
+        input_file = viz.csv_to_ts(input_file)
+        input_file = prep.impute_missing_data(input_file)
+        actual = prep.impute_outliers(input_file)
+
         return_value = None
-        if self.op == "MSE":
-            return_value = viz.MSE(self.ts)
-        elif self.op == "RMSE":
-            return_value = viz.RMSE(self.ts)
-        elif self.op == "MAPE":
-            return_value = viz.MAPE(self.ts)
-        elif self.op == "sMAPE":
-            return_value = viz.sMAPE(self.ts)
+        if op_exec == "MSE":
+            return_value = viz.MSE(actual, forecast)
+        elif op_exec == "RMSE":
+            return_value = viz.RMSE(actual, forecast)
+        elif op_exec == "MAPE":
+            return_value = viz.MAPE(actual, forecast)
+        elif op_exec == "sMAPE":
+            return_value = viz.sMAPE(actual, forecast)
         return return_value
 
 # ------- End Node Classes --------------

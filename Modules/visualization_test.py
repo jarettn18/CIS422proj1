@@ -10,10 +10,12 @@ Overview: Testing for visualization and evaluation module
 """
 
 import visualization as viz
+import preprocessing as prep
 
 def testing(csv):
     # establish series variable to be used throughout
-    series = viz.csv_to_ts(csv, 'Temperature')
+    # series = viz.read_matrix(csv, 'Temperature')
+    series = prep.denoise(csv)
     print("\n----data frame head----")
     print(series.head())
     print("\n----data frame column types----")

@@ -43,6 +43,24 @@ from numpy import percentile
 
 # In[288]:
 
+def read_ts(input_file):
+    print(type(input_file))
+    print(input_file.columns)
+
+def read_matrix(input_file):
+
+    matrix_list = []
+    for sublist in input_file:
+        for item in sublist:
+            matrix_list.append(item)
+
+    df = DataFrame(matrix_list, columns=['Series_old'])
+    time = pd.date_range(start=pd.datetime(2000,1,1),periods=len(df))
+    time_series = df.assign(Time = time)
+    time_series = time_series.assign(Series = time_series['Series_old'])
+    del time_series['Series_old']
+    time_series.set_index(pd.to_datetime(time_series['Time']))
+    return time_series
 
 def csv_to_ts(csv):
     """
@@ -51,7 +69,7 @@ def csv_to_ts(csv):
     TODO: find function other than assign to pass y in as unique title
     TODO: provide more customizability for periods
     """
-    series = csv#read_csv(csv, names=["Series_old"])
+    series = read_csv(csv, names=["Series_old"])
     time = pd.date_range(start=pd.datetime(2000,1,1),periods=len(series))
     time_series = series.assign(Time = time)
     time_series = time_series.assign(Series = time_series['Series_old'])
@@ -123,6 +141,7 @@ def summary(series):
 def box_plot(series):
     # box plot
     plt.boxplot(series['Series'])
+    plt.show()
 
 
 # In[292]:
