@@ -12,43 +12,49 @@ Overview: Testing for preprocessing module
 import preprocessing as prep
 
 if __name__ == '__main__':
-    tmp = 0
-    data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/missing_data_test.csv"
+    print("--------Preprocessing Test 1--------")
+    print("       ----Reading file-----         ")
     training = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/missing_data_test.csv"
     data_op = prep.read_from_file(training)
+    assert data_op is not None
+    # ---------------------
+    print("     ----Printing Content:----\n")
     print(data_op)
-    dataaa = prep.impute_missing_data(data_op)
-    prep.write_to_file("da.csv", dataaa)
-    # log = prep.cubic_roots(data_op)
-    # prep.write_to_file("cubed.csv", log)
-    # prep.write_to_file("logged.csv", prep.logarithm(data_op))
-    # prep.split_data(data_op, 50, 25, 25)
-    # cleaned = prep.denoise(data_op)
-    # clip = prep.clip(data_op, "1/1/2010", "1/5/2010")
-    # print(clip)# works
-    # prep.write_to_file("cleaned.csv", cleaned)  # works
-    # scaled = prep.scaling(cleaned)  # working
-    # temp_data2 = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/1_temperature_test.csv"
-    # data_op_2 = prep.read_from_file(temp_data2)
-    # new = prep.assign_time(data_op, "02/02/1998", 2)
-    # prep.write_to_file("newtime.csv", new)
-    # print(data_op)
-    # prep.write_to_file("scaled.csv", scaled)  # works
-    # ----------------
-    # missing_data = prep.read_from_file("/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/missing_data_test.csv")
-    # longest_run = prep.longest_continuous_run(missing_data)  # works
-    # prep.write_to_file("longest_run.csv", longest_run)         # works
-    # ----------------
-    # diff = prep.difference(data_op)
-    # prep.write_to_file("diff.csv", diff)
-    # ----------------
+    print("--------Preprocessing Test 2--------")
+    print("         ----Denoise()----          ")
+    # tests both impute functions
+    denoised = prep.denoise(data_op)
+    print(denoised)
+    # ---------------------
+    print("--------Preprocessing Test 2--------")
+    print("         ----longest_run()----      ")
+    data = prep.read_from_file("/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/missing_data_test.csv")
+    longest_run = prep.longest_continuous_run(data)
+    print(longest_run)
+    # ---------------------
+    print("--------Preprocessing Test 3--------")
+    print("           ----clip()----           ")
+    clipped = prep.clip(longest_run, "9/15/2008", "12/15/2008")
+    print(clipped)
+    # ---------------------
+    print("--------Preprocessing Test 4--------")
+    print("       -----assign_time()-----      ")
+    data = prep.read_from_file("/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/assign_time_test.csv")
+    print(data)
+    assigned_time = prep.assign_time(data, 0, 1)
+    print(assigned_time)
+
+
+
+
+
+
+
+
+
+
     # data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/1_temperature_train.csv"
     # data = "/Users/loganlevitre/Desktop/422/CIS422proj1/TestData/FRB_H15 NonFinancial.csv"
-    # TS2DB
-    # inputs = []
-    # outputs = []
-    # da = prep.ts2db(data, 50, 25, 25, inputs, outputs, "data_op.csv")
-    # print(da)# works
     # ----------------
     # inputs from left to right(up to down) array is of t-x
     # t being time now. i.e input_index[0] = t - 0 = t  , input_index[1]  = t + (-x) = t-x

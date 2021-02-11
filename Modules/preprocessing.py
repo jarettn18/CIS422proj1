@@ -14,7 +14,7 @@ from math import pow, log10
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import datetime as dt
-import janitor as pyj
+#import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -24,8 +24,11 @@ def read_from_file(input_file):
     :param input_file: file passed to function containing Time Series Data
     :return: returns DataFrame object declared time_series
     """
-    time_series = pd.read_csv(input_file, parse_dates=True)
-    return time_series
+    if input_file is not None:
+        time_series = pd.read_csv(input_file, parse_dates=True)
+        return time_series
+    else:
+        return None
 
 
 def write_to_file(output_file, ts):
