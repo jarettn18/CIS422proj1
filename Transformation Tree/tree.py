@@ -1,7 +1,7 @@
 """
 File: tree.py
 Class: CIS 422
-Date: January 20, 2021
+Date: February 9, 2021
 Team: The Nerd Herd
 Head Programmers: Callista West, Zeke Petersen, Jack Sanders, Jarett Nishijo
 Version 0.1.0
@@ -18,29 +18,31 @@ from node import visualizeNode
 from node import evalNode
 import pandas as pd
 import copy
+
 # Splits section likely to change later
 OPS = {
-       "preps": ["denoise", "impute_missing_data", "impute_outliers",
-            "longest_continuous_run", "clip", "assign_time", "difference",
-            "scaling", "standardize", "logarithm", "cubic_roots"],
-       "splits": ["ts2db"],
-       "models": ["mlp", "rf"],
-       "evals": ["MSE", "RMSE", "MAPE", "sMAPE"],
-       "visualizes":["plot", "histogram", "summary", "box_plot", "shapiro_wilk",
-            "d_agostino", "anderson_darling", "qq_plot"]
-      }
+    "preps": ["denoise", "impute_missing_data", "impute_outliers",
+              "longest_continuous_run", "clip", "assign_time", "difference",
+              "scaling", "standardize", "logarithm", "cubic_roots"],
+    "splits": ["ts2db"],
+    "models": ["mlp", "rf"],
+    "evals": ["MSE", "RMSE", "MAPE", "sMAPE"],
+    "visualizes": ["plot", "histogram", "summary", "box_plot", "shapiro_wilk",
+                   "d_agostino", "anderson_darling", "qq_plot"]
+}
+
 
 class Tree:
     def __init__(self):
-        self.infile = None    # Filled in at execute stage
-        self.root = None      # Eventually will be a node object
+        self.infile = None  # Filled in at execute stage
+        self.root = None  # Eventually will be a node object
 
     # helper function
     def _find_node(self, op_list):
         """
         :op_list: list of function operator strings, represent real functions
 
-		Starting from the root, trace node path by their op value in order.
+        Starting from the root, trace node path by their op value in order.
 		Returns an existing Node with the last op in the list (may be any of the 5).
 		Returns None if node path is invalid or node doesn’t exist.
         """
@@ -86,7 +88,7 @@ class Tree:
         :op_list: list of function operator strings, represent real functions
         :node: Node class object, will be any of the 5 subclasses
 
-		If the root is None, sets the node passed as the root, regardless of the
+        If the root is None, sets the node passed as the root, regardless of the
         op_list.
         If the root is not None and the op_list represents a valid path, will
         return the Node containing the last operator of the op_list.
@@ -106,10 +108,6 @@ class Tree:
                 found_node.children.append(node)
             else:
                 raise Exception("Unable to add node\n")
-
-
-    def _print_tree(self):
-        pass
 
     def add_prep_node(self, op_list, op, starting_date, final_date, increment):
         """
@@ -211,65 +209,66 @@ class Tree:
 
         self._add_node(op_list, new_node)
 
-    """
-    Can assume the tree has valid node ordering, though will need to check
-    to ensure the root is a prep (or I suppose a split, if we feed raw data)
+    def execute_tree(infile):
+        """
+        Calls execute functions of each node in tree
+        :return: None
+        """
 
-    prep -> split -> model -> eval
-        \-> visualize
+        # input_file = '../TestData/missing_data_test.csv'
+        input_file = '../TestData/4_irradiance_test.csv'
+        input_train = '../TestData/4_irradiance_train.csv'
 
-    Can implement the execute functions of each class to simplify this function
-    """
-        
-    def execute_tree(self, infile):
-
-        root = self.root
+        root = infile.root
         if root is None:
             return
-        if root.op not in OPS["preps"]:
-            raise Exception("Root not PrepNode")
 
         # create a queue and enqueue root to it using append
         queue = []
         queue.append(root)
-        model = None
 
         # Carry out level order traversal.
         # The double while loop is used to make sure that
         #     each level is printed on a different line
-        print("------------") # extra space in between levels
-        while(len(queue) >0):
+        print("------------")  # extra space in between levels
+        while (len(queue) > 0):
 
             n = len(queue)
-            while(n > 0):
+            while (n > 0):
                 # Dequeue an item from the queue and print it
                 p = queue[0]
                 queue.pop(0)
 
                 print(p.op)
                 if p.op in OPS["preps"]:
-                    time_series = prepNode.execute(infile, p.op)
-                    print(time_series)
+                    time_series = prepNode.execute(input_file, p.op)
                 elif p.op in OPS["splits"]:
-                    train_ts, train_inputs, test_ts, test_inputs = splitNode.execute(infile, p.op)
+                    forecast = splitNode.execute(input_train, input_file, p.op)
+                    print(forecast)
+                    # split = splitNode.execute(input_file, p.op)
+                    # train_ts = split[0]
+                    # train_inputs = split[1]
+                    # test_ts = split[2]
+                    # test_inputs = split[3]
+                    # print("train_ts:\n", train_ts, "\ntrain_inputs:\n", train_inputs, "\ntest_ts:\n", test_ts, "\ntest_inputs:\n", test_inputs)
                 elif p.op in OPS["models"]:
-                    model = modelNode.execute(train_ts, train_inputs, test_inputs, p.op)
-                    print(model)
+                    # modelNode.execute(input_file, p.op)
+                    pass
                 elif p.op in OPS["evals"]:
-                    eval = evalNode.execute(infile, model, p.op)
-                    print(eval)
+                    # evalNode.execute(input_file, p.op)
+                    pass
                 elif p.op in OPS["visualizes"]:
-                    visualize = visualizeNode.execute(infile, p.op)
-                    print(visualize)
+                    pass
+                    # visualizeNode.execute(input_file, p.op)
                 # Enqueue all of the children of the dequeued node
                 for index, value in enumerate(p.children):
+                    # for index, value in enumerate(p.folder):
                     queue.append(value)
+
                 n -= 1
-            print("------------") # extra space in between levels
+            print("------------")  # extra space in between levels
 
         print(".................end of tree...............\n")
-
-        
 
     def replicate_subtree(self, op_list):
         """
@@ -292,7 +291,6 @@ class Tree:
             else:
                 raise Exception("Error cannot replicate subtree")
 
-
     def replicate_path(self, op_list):
         """
         creates a new tree that consists of a path of another tree
@@ -305,7 +303,7 @@ class Tree:
         # loop through list to get individual nodes one by one\
         for idx in range(len(op_list)):
             # check if node at idx in list is in original tree
-            found_node = self._find_node(op_list[:idx+1])
+            found_node = self._find_node(op_list[:idx + 1])
             if found_node is not None:
                 # if in tree, create new node
                 deep_copy = copy.deepcopy(found_node)
@@ -314,7 +312,6 @@ class Tree:
                 # add node to tree
                 new_path._add_node(op_list[:idx], deep_copy)
         return new_path
-
 
     def add_subtree(self, op_list, subtree):
         """
@@ -335,7 +332,7 @@ class Tree:
                 raise Exception("Unable to add subtree")
 
     def replace_operator(self, op_list, node):
-	    # Find Node in Op Liust
+        # Find Node in Op List
         dict_list = list(OPS.values())
         val_list = None
         node_to_find = None
@@ -343,7 +340,7 @@ class Tree:
         # Find correct list from OPS
         for i in range(len(dict_list)):
             for j in range(len(dict_list[i])):
-                if (node == dict_list[i][j]):
+                if node == dict_list[i][j]:
                     val_list = dict_list[i]
                     break
         if val_list is None:
@@ -358,131 +355,3 @@ class Tree:
             raise Exception("Replacement Node is not of same type as Node to be replaced")
         found_node = self._find_node(op_list)
         found_node.op = node
-
-
-# END TREE DEFINITION --------------------------
-
-# Below here are functions that may need to be modified and moved
-# to the Tree class -- these were original ideas for how to implement tree functions
-#-----------------------------------------------------------------------------------
-
-def save_tree(root):
-    pass
-    """
-    Tree starting at specified root will be create and saved to a CSV? file
-    :param root: the root of the tree the user is wanting saved
-    :return: ??? do we want a CSV file?
-    """
-
-def save_pipeline(root, end):
-    pass
-    """
-    Takes a pipeline from a given root and a given end and saves/stores the
-        pipeline
-    :param root: the root of the pipeline
-           end: the last node/leaf of the pipeline
-    : return: ?? CSV file? json?
-    """
-
-"""
-def replicate_path(self, array, end_node):
-
-    Function will start the path at the root of the tree and finish at end_node,
-        the parameter of the function
-    :param self: binding arguments with class Node
-           end_node: the last node/leaf of the path, where the path comes to a stop
-    :return: returns none
-"""
-
-"""
-    if(not roots):
-        print("Cannot have a path without a root")
-        return False
-"""
-"""
-    #array.append(root)
-    print("THIS IS THE ROOT: " + self.key)
-    root_node = Node(self.key)
-    print("made it here")
-    end_nodes = Node(end_node.key)
-    array.append(self)
-    print(array[0])
-
-    if(root_node.key == end_nodes.key):
-        print("this is true")
-        return True
-    if(replicate_path(root_node.child, array, end_nodes)):
-        print("trying this function")
-        return True
-    print("anything here")
-    array.pop(-1)
-    return False
-def print_path(root, ending):
-    array = []
-    if(replicate_path(root, array, ending)):
-        for i in range(len(array)-1):
-            print(array[i], ending = "->")
-        print(array[len(array)-1])
-    else:
-        print("no path found")
-
-
-"""
-
-
-
-def printNode(root):
-    # if there is no root, return none
-    if root is None:
-        return
-
-    # create a queue and enqueue root to it using append
-    queue = []
-    queue.append(root)
-
-    # Carry out level order traversal.
-    # The double while loop is used to make sure that
-    #     each level is printed on a different line
-
-    while(len(queue) >0):
-
-        n = len(queue)
-        while(n > 0):
-            # Dequeue an item from the queue and print it
-            p = queue[0]
-            queue.pop(0)
-            #if(p.key == "root"):
-                #print("root found")
-
-            print(p.key)
-            # Enqueue all of the children of the dequeued node
-            for index, value in enumerate(p.child):
-                #for index, value in enumerate(p.folder):
-                queue.append(value)
-            for index, value in enumerate(p.folder):
-                queue.append(value)
-
-            n -= 1
-        print("---------------") # extra space in between levels
-
-    print(".................end of tree...............\n")
-
-
-def replace(self, old, new):
-    """
-    Function to replace a process step with a different operator, such as
-        replacing denoise() with clip()
-    :param self: binding arguments with class Node
-           old: the orignal process step that will be replaced
-           new: the different operator, that will be taking the place of the original
-               operator
-    : return: returns None
-    """
-    pass
-    """
-    #still need to check that old and new nodes are in same "category"
-    if old is not None:
-        self.folder.append(new)
-        self.folder.remove(old)
-        return None
-    """
