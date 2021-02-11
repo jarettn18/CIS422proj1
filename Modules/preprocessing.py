@@ -14,7 +14,7 @@ from math import pow, log10
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import datetime as dt
-#import janitor as pyj
+import janitor as pyj
 
 
 def read_from_file(input_file):
@@ -167,9 +167,9 @@ def assign_time(time_series, start, increment):
     If we do not have the times associated with a sequence of readings.
     Start at a specific time and increment for the following entry.
     :param time_series: Time series data
-    :param start: beginning of the timestamp
+    :param start: starting date of the timestamp
     :param increment: difference to add to next timestamp
-    :return: a new time_series with timestamps assigned to each entry
+    :return: a new time_series with date/timestamps assigned to each entry
     """
     # get column containing data
     data_col = time_series.columns[len(time_series.columns) - 1]
