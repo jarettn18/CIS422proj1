@@ -59,9 +59,9 @@ class prepNode(Node):
         elif op_exec == "impute_outliers":
             return_value = prep.impute_outliers(ts)
         elif op_exec == "longest_continuous_run":
-            return_value = prep.longest_continuous_run(self.ts)
+            return_value = prep.longest_continuous_run(ts)
         elif op_exec == "clip":
-            return_value = pre.denoise(ts, self.starting_date, self.starting_date, self.final_date)
+            return_value = prep.denoise(ts, self.starting_date, self.starting_date, self.final_date)
         elif op_exec == "assign_time":
             return_value = prep.assign_time(ts, self.starting_date, self.increment)
         elif op_exec == "difference":
@@ -89,16 +89,6 @@ class modelNode(Node):
         """
         This function will help execute the tree
         """
-        # if op_exec == "mlp":
-        #     model = mod.mlp_model()
-        #     model.fit(self.inputs, self.ts)
-        #     forecast = model.forecast(inputs_test)
-        #     return forecast
-        # elif op_exec == "rf":
-        #     model = mod.rf_model()
-        #     model.fit(self.inputs, self.ts)
-        #     forecast = model.forecast(inputs_test)
-        #     return forecast
         if op_exec == "mlp":
             model = mod.mlp_model()
             model.fit(train_inputs, train_ts)
@@ -121,8 +111,6 @@ class splitNode(Node):
         """
         This function will help execute the tree
         """
-        # if self.op == "ts2db":
-        #     return prep.ts2db(self.file_name, self.file_name_test)
         if op_exec == "ts2db":
             # print(prep.ts2db(input_file, None))
             return prep.ts2db(input_file)
@@ -174,9 +162,6 @@ class evalNode(Node):
         """
         This function will help execute the tree
         """
-        # input_file = viz.csv_to_ts(input_file)
-        # input_file = prep.impute_missing_data(input_file)
-        # actual = prep.impute_outliers(input_file)
 
         return_value = None
         if op_exec == "MSE":

@@ -48,7 +48,10 @@ def read_ts(input_file):
     print(input_file.columns)
 
 def read_matrix(input_file):
-
+    """
+    :input_file: list of lists
+    return: time series
+    """
     matrix_list = []
     for sublist in input_file:
         for item in sublist:
@@ -64,10 +67,8 @@ def read_matrix(input_file):
 
 def csv_to_ts(csv):
     """
-    .csv: matrix, y: y-axis/title -> dataframe w/ two columns
-
-    TODO: find function other than assign to pass y in as unique title
-    TODO: provide more customizability for periods
+    :csv: matrix, y: y-axis/title
+    return: time series dataframe w/ two columns
     """
     series = read_csv(csv, names=["Series_old"])
     time = pd.date_range(start=pd.datetime(2000,1,1),periods=len(series))
@@ -153,6 +154,8 @@ def shapiro_wilk(series):
 
     SW tests the null hypothesis that a sample
     came from a normally distributed population.
+
+    Inspiration: https://machinelearningmastery.com/a-gentle-introduction-to-normality-tests-in-python/
     """
     # Shapiro-Wilk Test
     from numpy.random import seed
@@ -177,6 +180,8 @@ def d_agostino(series):
     """
     AG tests the null hypothesis that a sample
     came from a normally distributed population.
+
+    Inspiration: https://machinelearningmastery.com/a-gentle-introduction-to-normality-tests-in-python/
     """
     # normality test
     stat, p = normaltest(series['Series'])
@@ -197,6 +202,8 @@ def anderson_darling(series):
     """
     AD tests the null hypothesis that a sample
     came from a normally distributed population.
+
+    Inspiration: https://machinelearningmastery.com/a-gentle-introduction-to-normality-tests-in-python/
     """
     # normality test
     result = anderson(series['Series'])
@@ -214,7 +221,9 @@ def anderson_darling(series):
 
 
 def qq_plot(series):
-    # QQ Plot
+    """
+    takes time seris and displays plot
+    """
     qqplot(series['Series'], line='s')
     pyplot.show()
 
@@ -227,7 +236,7 @@ def MSE(actual, forecast):
     Mean Squared Error:
     average squared difference between the
     estimated values and the actual value.
-    TODO: edge cases
+    inspiration: statology
     """
     length = min(len(actual), len(forecast)) - 1
     actual = actual[:length]
@@ -244,7 +253,7 @@ def RMSE(actual, forecast):
     """
     Root Mean Square Error
     standard deviation of the residuals
-    TODO: edge cases
+    inspiration: statology
     # """
     length = min(len(actual), len(forecast)) - 1
     actual = actual[:length]
@@ -263,7 +272,7 @@ def MAPE(actual, forecast):
     Mean Absolute Percentage Error (MAPE)
     average absolute percent error for each time period
     minus actual values divided by actual values.
-    TODO: edge cases
+    inspiration: statology
     """
     length = min(len(actual), len(forecast)) - 1
     actual = actual[:length]
@@ -282,7 +291,7 @@ def sMAPE(actual, forecast):
     Symmetrical Mean Absolute Percentage Error (sMAPE)
     subtract each actual value from forecast value for each period
     take the root square of the square of the result
-    TODO: edge cases
+    inspiration: statology
     """
     length = min(len(actual), len(forecast)) - 1
     actual = actual[:length]
