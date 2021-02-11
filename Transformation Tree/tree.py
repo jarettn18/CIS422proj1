@@ -3,7 +3,7 @@ File: tree.py
 Class: CIS 422
 Date: February 9, 2021
 Team: The Nerd Herd
-Head Programmers: Callista West, Zeke Petersen, Jack Sanders, Jarett Nishijo
+Head Programmers: Callista West, Zeke Petersen, Jack Sanders, Jarett Nishijo, Logan Levitre
 Version 0.1.0
 
 Basic Tree implementation
@@ -244,7 +244,7 @@ class Tree:
                       model = modelNode.execute(train_ts, train_inputs, test_inputs, p.op)
                       print(model)
                   elif p.op in OPS["evals"]:
-                      eval = evalNode.execute(infile, model, p.op)
+                      eval = evalNode.execute(train_inputs, model, p.op)
                       print(eval)
                   elif p.op in OPS["visualizes"]:
                       visualize = visualizeNode.execute(infile, p.op)

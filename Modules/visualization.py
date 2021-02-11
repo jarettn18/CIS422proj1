@@ -201,7 +201,6 @@ def anderson_darling(series):
     # normality test
     result = anderson(series['Series'])
     print('Statistic: %.3f' % result.statistic)
-    p = 0
     for i in range(len(result.critical_values)):
         sl, cv = result.significance_level[i], result.critical_values[i]
         if result.statistic < result.critical_values[i]:
@@ -230,6 +229,9 @@ def MSE(actual, forecast):
     estimated values and the actual value.
     TODO: edge cases
     """
+    length = min(len(actual), len(forecast)) - 1
+    actual = actual[:length]
+    forecast = forecast[:length]
     mse = mean_squared_error(actual, forecast)
     print('MSE: %f' % mse)
     return mse
@@ -243,10 +245,14 @@ def RMSE(actual, forecast):
     Root Mean Square Error
     standard deviation of the residuals
     TODO: edge cases
-    """
+    # """
+    length = min(len(actual), len(forecast)) - 1
+    actual = actual[:length]
+    forecast = forecast[:length]
     mse = mean_squared_error(actual, forecast)
     rmse = sqrt(mse)
     print('RMSE: %f' % rmse)
+    return rmse
 
 
 # In[298]:
@@ -259,6 +265,9 @@ def MAPE(actual, forecast):
     minus actual values divided by actual values.
     TODO: edge cases
     """
+    length = min(len(actual), len(forecast)) - 1
+    actual = actual[:length]
+    forecast = forecast[:length]
     actual, forecast = np.array(actual), np.array(forecast)
     mape = np.mean(np.abs((actual - forecast) / actual)) * 100
     print('MAPE: %f' % mape)
@@ -275,8 +284,12 @@ def sMAPE(actual, forecast):
     take the root square of the square of the result
     TODO: edge cases
     """
+    length = min(len(actual), len(forecast)) - 1
+    actual = actual[:length]
+    forecast = forecast[:length]
     smape = 1/len(actual) * np.sum(2 * np.abs(forecast-actual) / (np.abs(actual) + np.abs(forecast))*100)
     print('sMAPE: %f' % smape)
+    return smape
 
 
 # In[300]:

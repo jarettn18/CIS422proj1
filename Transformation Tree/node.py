@@ -169,14 +169,14 @@ class evalNode(Node):
         self.y_test = None
         self.y_forecast = None
 
-    def execute(input_file, forecast, op_exec):
+    def execute(actual, forecast, op_exec):
         # pass
         """
         This function will help execute the tree
         """
-        input_file = viz.csv_to_ts(input_file)
-        input_file = prep.impute_missing_data(input_file)
-        actual = prep.impute_outliers(input_file)
+        # input_file = viz.csv_to_ts(input_file)
+        # input_file = prep.impute_missing_data(input_file)
+        # actual = prep.impute_outliers(input_file)
 
         return_value = None
         if op_exec == "MSE":
